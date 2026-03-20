@@ -2,7 +2,7 @@ package ru.yandex.practicum.service.handler.sensorEvent;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecordBase;
-import ru.yandex.practicum.kafka.KafkaEventProducer;
+import ru.yandex.practicum.service.KafkaEventProducer;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.model.KafkaTopics;
 import ru.yandex.practicum.model.sensorEvent.SensorEvent;

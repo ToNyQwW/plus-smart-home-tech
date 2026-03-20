@@ -1,7 +1,7 @@
 package ru.yandex.practicum.service.handler.sensorEvent;
 
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.kafka.KafkaEventProducer;
+import ru.yandex.practicum.service.KafkaEventProducer;
 import ru.yandex.practicum.kafka.telemetry.event.SwitchSensorAvro;
 import ru.yandex.practicum.model.sensorEvent.SensorEvent;
 import ru.yandex.practicum.model.sensorEvent.SwitchSensorEvent;
