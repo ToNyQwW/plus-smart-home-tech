@@ -1,7 +1,6 @@
 package ru.yandex.practicum.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +30,9 @@ public class HubEventController {
     @PostMapping
     public void sendHubEvent(@Valid @RequestBody HubEvent request) {
         HubEventHandler hubEventHandler = hubEventHandlers.get(request.getHubEventType());
+        if (hubEventHandler == null) {
+            throw new IllegalArgumentException("Не найден обработчик для события " + request.getHubEventType());
+        }
         hubEventHandler.handle(request);
     }
 }

@@ -31,6 +31,9 @@ public class SensorEventController {
     @PostMapping
     public void sendSensorEvent(@Valid @RequestBody SensorEvent request) {
         SensorEventHandler sensorEventHandler = sensorEventHandlers.get(request.getSensorEventType());
+        if (sensorEventHandler == null) {
+            throw new IllegalArgumentException("Не найден обработчик для события " + request.getSensorEventType());
+        }
         sensorEventHandler.handle(request);
     }
 }
