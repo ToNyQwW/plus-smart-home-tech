@@ -1,16 +1,22 @@
 package ru.yandex.practicum.service.handler.sensorEvent;
 
-import org.springframework.stereotype.Component;
-import ru.yandex.practicum.service.KafkaEventProducer;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.kafka.telemetry.event.ClimateSensorAvro;
 import ru.yandex.practicum.model.sensorEvent.ClimateSensorEvent;
 import ru.yandex.practicum.model.sensorEvent.SensorEvent;
+import ru.yandex.practicum.model.sensorEvent.SensorEventType;
+import ru.yandex.practicum.service.KafkaEventProducer;
 
-@Component(value = "CLIMATE_SENSOR_EVENT")
+@Service
 public class ClimateSensorEventHandler extends BaseSensorEventHandler<ClimateSensorAvro> {
 
     public ClimateSensorEventHandler(KafkaEventProducer producer) {
         super(producer);
+    }
+
+    @Override
+    public SensorEventType getSensorEventType() {
+        return SensorEventType.CLIMATE_SENSOR_EVENT;
     }
 
     @Override

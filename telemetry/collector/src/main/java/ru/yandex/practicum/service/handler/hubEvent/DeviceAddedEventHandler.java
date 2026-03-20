@@ -1,17 +1,23 @@
 package ru.yandex.practicum.service.handler.hubEvent;
 
-import org.springframework.stereotype.Component;
-import ru.yandex.practicum.service.KafkaEventProducer;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
 import ru.yandex.practicum.model.hubEvent.DeviceAddedEvent;
 import ru.yandex.practicum.model.hubEvent.HubEvent;
+import ru.yandex.practicum.model.hubEvent.HubEventType;
+import ru.yandex.practicum.service.KafkaEventProducer;
 
-@Component(value = "DEVICE_ADDED")
+@Service
 public class DeviceAddedEventHandler extends BaseHubEventHandler<DeviceAddedEventAvro> {
 
     public DeviceAddedEventHandler(KafkaEventProducer producer) {
         super(producer);
+    }
+
+    @Override
+    public HubEventType getHubEventType() {
+        return HubEventType.DEVICE_ADDED;
     }
 
     @Override
