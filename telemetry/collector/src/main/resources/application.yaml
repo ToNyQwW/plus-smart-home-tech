@@ -7,5 +7,5 @@ collector:
         "key.serializer": org.apache.kafka.common.serialization.StringSerializer
         "value.serializer": ru.yandex.practicum.kafka.serializer.GeneralAvroSerializer
       topics:
-        sensors-events: telemetry.sensors.v1
-        hubs-events: telemetry.hubs.v1
+        sensor: telemetry.sensors.v1
+        hub: telemetry.hubs.v1
