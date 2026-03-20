@@ -1,6 +1,7 @@
 package ru.yandex.practicum.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,8 +11,8 @@ import ru.yandex.practicum.model.hubEvent.HubEvent;
 import ru.yandex.practicum.model.hubEvent.HubEventType;
 import ru.yandex.practicum.service.handler.HubEventHandler;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class HubEventController {
 
     private final Map<HubEventType, HubEventHandler> hubEventHandlers;
 
-    public HubEventController(Set<HubEventHandler> hubEventHandlers) {
+    public HubEventController(List<HubEventHandler> hubEventHandlers) {
         this.hubEventHandlers = hubEventHandlers.stream()
                 .collect(Collectors.toMap(HubEventHandler::getHubEventType, Function.identity()));
     }
