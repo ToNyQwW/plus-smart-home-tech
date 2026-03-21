@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Validated
 @RestController
-@RequestMapping(path = "/events/sensorc")
+@RequestMapping(path = "/events/sensors")
 public class SensorEventController {
 
 
