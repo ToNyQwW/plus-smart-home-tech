@@ -1,0 +1,15 @@
+aggregator:
+  kafka:
+    producer:
+      properties:
+        "bootstrap.servers": localhost:9092
+        "key.serializer": "org.apache.kafka.common.serialization.StringSerializer"
+        "value.serializer": "ru.yandex.practicum.kafka.serializer.GeneralAvroSerializer"
+      topic: "telemetry.snapshots.v1"
+
+    consumer:
+      properties:
+        "bootstrap.servers": localhost:9092
+        "key.serializer": "org.apache.kafka.common.serialization.StringSerializer"
+        "value.serializer": "ru.yandex.practicum.kafka.deserializer.SensorEventDeserializer"
+      topic: "telemetry.sensors.v1"
