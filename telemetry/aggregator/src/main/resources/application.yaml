@@ -10,6 +10,6 @@ aggregator:
     consumer:
       properties:
         "bootstrap.servers": localhost:9092
-        "key.serializer": "org.apache.kafka.common.serialization.StringSerializer"
-        "value.serializer": "ru.yandex.practicum.kafka.deserializer.SensorEventDeserializer"
+        "key.deserializer": "org.apache.kafka.common.serialization.StringDeserializer"
+        "value.deserializer": "ru.yandex.practicum.kafka.deserializer.SensorEventDeserializer"
       topic: "telemetry.sensors.v1"
