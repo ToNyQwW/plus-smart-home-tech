@@ -13,5 +13,5 @@ aggregator:
         "key.deserializer": "org.apache.kafka.common.serialization.StringDeserializer"
         "value.deserializer": "ru.yandex.practicum.kafka.deserializer.SensorEventDeserializer"
         "group.id": "telemetry.aggregator.sensors"
-        "poll-timeout": 100ms
       topic: "telemetry.sensors.v1"
+      "poll-timeout": 100ms
