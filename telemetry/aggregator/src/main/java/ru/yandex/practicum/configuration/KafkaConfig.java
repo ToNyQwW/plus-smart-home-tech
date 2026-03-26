@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.time.Duration;
 import java.util.Properties;
 
 @Getter
@@ -31,6 +32,7 @@ public class KafkaConfig {
     public static class ConsumerConfig {
 
         private String topic;
+        private Duration pollTimeout;
         private Properties properties;
     }
 }

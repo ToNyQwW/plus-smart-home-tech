@@ -12,4 +12,5 @@ aggregator:
         "bootstrap.servers": localhost:9092
         "key.deserializer": "org.apache.kafka.common.serialization.StringDeserializer"
         "value.deserializer": "ru.yandex.practicum.kafka.deserializer.SensorEventDeserializer"
+        "poll=timeout": 100ms
       topic: "telemetry.sensors.v1"
