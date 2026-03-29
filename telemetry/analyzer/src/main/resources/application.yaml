@@ -13,6 +13,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  sql:
+    init:
+      mode: always
 
 kafka:
   consumers:
@@ -38,7 +41,7 @@ kafka:
 grpc:
   client:
     hub-router:
-      address: 'static://localhost:59090'
+      address: static://localhost:59090
       enableKeepAlive: true
       keepAliveWithoutCalls: true
       negotiationType: plaintext
