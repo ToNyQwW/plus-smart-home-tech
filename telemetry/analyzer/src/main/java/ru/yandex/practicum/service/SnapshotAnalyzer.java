@@ -63,6 +63,10 @@ public class SnapshotAnalyzer {
 
         Integer value = sensorEventHandler.getValue(condition.getType(), sensorStateAvro);
 
+        if (value == null) {
+            return false;
+        }
+
         return switch (condition.getOperation()) {
             case EQUALS -> value.equals(condition.getValue());
             case LOWER_THAN -> value < condition.getValue();
