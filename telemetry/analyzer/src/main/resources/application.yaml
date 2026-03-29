@@ -13,9 +13,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  sql:
-    init:
-      mode: always
 
 kafka:
   consumers:
