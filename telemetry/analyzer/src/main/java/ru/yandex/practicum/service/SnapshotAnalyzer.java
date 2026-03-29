@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 public class SnapshotAnalyzer {
 
     private final ScenarioRepository scenarioRepository;
-    private final Map<Class<?>, SensorEventHandler<?>> sensorEventHandlers;
+    private final Map<String, SensorEventHandler> sensorEventHandlers;
 
-    public SnapshotAnalyzer(ScenarioRepository scenarioRepository, List<SensorEventHandler<?>> handlers) {
+    public SnapshotAnalyzer(ScenarioRepository scenarioRepository, List<SensorEventHandler> handlers) {
         this.scenarioRepository = scenarioRepository;
         this.sensorEventHandlers = handlers.stream()
                 .collect(Collectors.toMap(
-                        SensorEventHandler::getPayloadType,
+                        SensorEventHandler::getType,
                         Function.identity()
                 ));
     }
@@ -53,7 +53,7 @@ public class SnapshotAnalyzer {
         }
 
         SensorStateAvro sensorStateAvro = snapshot.getSensorsState().get(sensorId);
-        SensorEventHandler<?> sensorEventHandler = sensorEventHandlers.get(sensorStateAvro.getData().getClass());
+        SensorEventHandler sensorEventHandler = sensorEventHandlers.get(sensorStateAvro.getData().getClass());
 
         if (sensorEventHandler == null) {
             log.warn("Нет обработчика для {}", sensorStateAvro.getData().getClass());

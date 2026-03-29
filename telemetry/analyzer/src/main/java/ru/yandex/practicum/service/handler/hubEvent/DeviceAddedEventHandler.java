@@ -11,13 +11,13 @@ import ru.yandex.practicum.service.handler.HubEventHandler;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DeviceAddedEventHandler implements HubEventHandler<DeviceAddedEventAvro> {
+public class DeviceAddedEventHandler implements HubEventHandler {
 
     private final SensorService sensorService;
 
     @Override
-    public Class<DeviceAddedEventAvro> getPayloadType() {
-        return DeviceAddedEventAvro.class;
+    public String getType() {
+        return DeviceAddedEventAvro.class.getName();
     }
 
     @Override

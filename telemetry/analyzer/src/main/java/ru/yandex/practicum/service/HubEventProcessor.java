@@ -21,14 +21,14 @@ public class HubEventProcessor implements Runnable {
 
     private final KafkaConfig.ConsumerConfig kafkaConfig;
     private final KafkaConsumer<String, HubEventAvro> consumer;
-    private final Map<Class<?>, HubEventHandler<?>> hubEventHandlers;
+    private final Map<String, HubEventHandler> hubEventHandlers;
 
-    public HubEventProcessor(KafkaConfig kafkaConfig, List<HubEventHandler<?>> handlers) {
+    public HubEventProcessor(KafkaConfig kafkaConfig, List<HubEventHandler> handlers) {
         this.kafkaConfig = kafkaConfig.getHubEventConsumer();
         this.consumer = new KafkaConsumer<>(kafkaConfig.getHubEventConsumer().getProperties());
         this.hubEventHandlers = handlers.stream()
                 .collect(Collectors.toMap(
-                        HubEventHandler::getPayloadType,
+                        HubEventHandler::getType,
                         Function.identity()
                 ));
 
@@ -49,7 +49,7 @@ public class HubEventProcessor implements Runnable {
 
                 for (ConsumerRecord<String, HubEventAvro> record : records) {
                     Object payload = record.value().getPayload();
-                    HubEventHandler<?> hubEventHandler = hubEventHandlers.get(payload.getClass());
+                    HubEventHandler hubEventHandler = hubEventHandlers.get(payload.getClass());
                     hubEventHandler.handle(record.key(), record.value());
                 }
                 consumer.commitSync();

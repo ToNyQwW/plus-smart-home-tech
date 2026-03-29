@@ -3,9 +3,9 @@ package ru.yandex.practicum.service.handler;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
 
-public interface SensorEventHandler<T> {
+public interface SensorEventHandler {
 
-    Class<T> getPayloadType();
+    String  getType();
 
     Integer getValue(ConditionTypeAvro conditionType, SensorStateAvro sensorState);
 }

@@ -5,11 +5,11 @@ import ru.yandex.practicum.kafka.telemetry.event.LightSensorAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
 import ru.yandex.practicum.service.handler.SensorEventHandler;
 
-public class LightSensorEventHandler implements SensorEventHandler<LightSensorAvro> {
+public class LightSensorEventHandler implements SensorEventHandler {
 
     @Override
-    public Class<LightSensorAvro> getPayloadType() {
-        return LightSensorAvro.class;
+    public String getType() {
+        return LightSensorAvro.class.getName();
     }
 
     @Override
