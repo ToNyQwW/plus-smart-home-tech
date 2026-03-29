@@ -1,4 +1,4 @@
-package ru.yandex.practicum.service.handler;
+package ru.yandex.practicum.service.handler.hubEvent;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.dal.service.SensorService;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceRemovedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
+import ru.yandex.practicum.service.handler.HubEventHandler;
 
 @Slf4j
 @Service
