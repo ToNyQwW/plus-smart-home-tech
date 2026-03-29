@@ -14,6 +14,25 @@ spring:
       hibernate:
         format_sql: true
 
+kafka:
+  consumers:
+    snapshotConsumer:
+      properties:
+        "bootstrap.servers": localhost:9092
+        "key.deserializer": "org.apache.kafka.common.serialization.StringDeserializer"
+        "value.deserializer": "ru.yandex.practicum.kafka.deserializer.SensorsSnapshotDeserializer"
+        "group.id": "telemetry.analyzer.snapshot"
+      topic: "telemetry.snapshots.v1"
+      poll-timeout: 500ms
+    hubEventConsumer:
+      properties:
+        "bootstrap.servers": localhost:9092
+        "key.deserializer": "org.apache.kafka.common.serialization.StringDeserializer"
+        "value.deserializer": "ru.yandex.practicum.kafka.deserializer.HubEventDeserializer"
+        "group.id": "telemetry.analyzer.hub"
+      topic: "telemetry.hubs.v1"
+      poll-timeout: 2000ms
+
 grpc:
   client:
     hub-router:

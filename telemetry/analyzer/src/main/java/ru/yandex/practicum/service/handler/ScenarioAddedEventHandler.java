@@ -1,0 +1,29 @@
+package ru.yandex.practicum.service.handler;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import ru.yandex.practicum.dal.service.ScenarioService;
+import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
+import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class ScenarioAddedEventHandler implements HubEventHandler<ScenarioAddedEventAvro> {
+
+    private final ScenarioService scenarioService;
+
+    @Override
+    public Class<ScenarioAddedEventAvro> getPayloadType() {
+        return ScenarioAddedEventAvro.class;
+    }
+
+    @Override
+    public void handle(String hubId, HubEventAvro event) {
+        ScenarioAddedEventAvro scenarioAddedEventAvro = (ScenarioAddedEventAvro) event.getPayload();
+
+        log.info("запрос на добавление нового сценария {} для хаба {}", scenarioAddedEventAvro.getName(), hubId);
+        scenarioService.save(scenarioAddedEventAvro, hubId);
+    }
+}
