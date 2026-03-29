@@ -58,9 +58,9 @@ public class AggregationStarter {
                     log.trace("Обработка показания датчика от хаба {} из партиции {} со смещением: {}",
                             record.key(), record.partition(), record.offset());
                     handleEvent(record.value());
-                    manageOffsets(record, count, consumer);
-                    count++;
+                    manageOffsets(record, count++);
                 }
+                producer.flush();
                 consumer.commitAsync();
             }
 
@@ -68,7 +68,6 @@ public class AggregationStarter {
         } catch (Exception e) {
             log.error("Ошибка во время обработки событий от датчиков", e);
         } finally {
-
             try {
                 producer.flush();
                 consumer.commitSync(currentOffsets);
@@ -76,22 +75,6 @@ public class AggregationStarter {
                 consumer.close();
                 producer.close();
             }
-        }
-    }
-
-    private void manageOffsets(ConsumerRecord<String, SensorEventAvro> record,
-                                      int count, KafkaConsumer<String, SensorEventAvro> consumer) {
-        currentOffsets.put(
-                new TopicPartition(record.topic(), record.partition()),
-                new OffsetAndMetadata(record.offset() + 1)
-        );
-
-        if (count % 10 == 0) {
-            consumer.commitAsync(currentOffsets, (offsets, exception) -> {
-                if (exception != null) {
-                    log.warn("Ошибка во время фиксации оффсетов: {}", offsets, exception);
-                }
-            });
         }
     }
 
@@ -122,5 +105,20 @@ public class AggregationStarter {
                 event.getId(), hubId, timestamp, topic);
 
         producer.send(record);
+    }
+
+    private void manageOffsets(ConsumerRecord<String, SensorEventAvro> record, int count) {
+        currentOffsets.put(
+                new TopicPartition(record.topic(), record.partition()),
+                new OffsetAndMetadata(record.offset() + 1)
+        );
+
+        if (count % 10 == 0) {
+            consumer.commitAsync(currentOffsets, (offsets, exception) -> {
+                if (exception != null) {
+                    log.warn("Ошибка во время фиксации оффсетов: {}", offsets, exception);
+                }
+            });
+        }
     }
 }

@@ -29,21 +29,26 @@ public class HubEventStarter implements Runnable {
         this.hubEventService = hubEventService;
         this.kafkaConfig = kafkaConfig.getHubEventConsumer();
         this.consumer = new KafkaConsumer<>(kafkaConfig.getHubEventConsumer().getProperties());
+
+        Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
     }
 
     @Override
     public void run() {
-        Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
         try {
             consumer.subscribe(List.of(kafkaConfig.getTopic()));
+
             while (true) {
                 ConsumerRecords<String, HubEventAvro> records = consumer.poll(kafkaConfig.getPollTimeout());
+
+                if (records.isEmpty()) {
+                    continue;
+                }
 
                 int count = 0;
                 for (ConsumerRecord<String, HubEventAvro> record : records) {
                     handleRecord(record);
-                    manageOffsets(record, count, consumer);
-                    count++;
+                    manageOffsets(record, count++);
                 }
                 consumer.commitAsync();
             }
@@ -52,7 +57,6 @@ public class HubEventStarter implements Runnable {
         } catch (Exception e) {
             log.error("Ошибка во время обработки сообщений от хаба", e);
         } finally {
-
             try {
                 consumer.commitSync(currentOffsets);
             } finally {
@@ -61,8 +65,7 @@ public class HubEventStarter implements Runnable {
         }
     }
 
-    private void manageOffsets(ConsumerRecord<String, HubEventAvro> record, int count,
-                               KafkaConsumer<String, HubEventAvro> consumer) {
+    private void manageOffsets(ConsumerRecord<String, HubEventAvro> record, int count) {
         currentOffsets.put(
                 new TopicPartition(record.topic(), record.partition()),
                 new OffsetAndMetadata(record.offset() + 1)
