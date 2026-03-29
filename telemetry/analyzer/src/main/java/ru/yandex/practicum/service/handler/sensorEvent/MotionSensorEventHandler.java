@@ -5,11 +5,11 @@ import ru.yandex.practicum.kafka.telemetry.event.MotionSensorAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
 import ru.yandex.practicum.service.handler.SensorEventHandler;
 
-public class MotionSensorEventHandler implements SensorEventHandler<MotionSensorEventHandler> {
+public class MotionSensorEventHandler implements SensorEventHandler {
 
     @Override
-    public Class<MotionSensorEventHandler> getPayloadType() {
-        return MotionSensorEventHandler.class;
+    public String getType() {
+        return MotionSensorEventHandler.class.getName();
     }
 
     @Override

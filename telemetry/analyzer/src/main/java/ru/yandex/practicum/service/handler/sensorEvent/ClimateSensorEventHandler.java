@@ -7,11 +7,11 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
 import ru.yandex.practicum.service.handler.SensorEventHandler;
 
 @Component
-public class ClimateSensorEventHandler implements SensorEventHandler<ClimateSensorAvro> {
+public class ClimateSensorEventHandler implements SensorEventHandler {
 
     @Override
-    public Class<ClimateSensorAvro> getPayloadType() {
-        return ClimateSensorAvro.class;
+    public String getType() {
+        return ClimateSensorAvro.class.getName();
     }
 
     @Override
