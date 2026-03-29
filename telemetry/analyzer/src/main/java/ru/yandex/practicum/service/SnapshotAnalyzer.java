@@ -46,22 +46,44 @@ public class SnapshotAnalyzer {
 
         for (Scenario scenario : scenarios) {
             Map<String, Condition> conditions = scenario.getConditions();
-            boolean flag = false;
-            for (Map.Entry<String, Condition> values : conditions.entrySet()) {
-                String sensorId = values.getKey();
-                Condition condition = values.getValue();
-                SensorStateAvro sensorStateAvro = snapshot.getSensorsState().get(sensorId);
-                SensorEventHandler<?> sensorEventHandler = sensorEventHandlers.get(sensorStateAvro.getData().getClass());
-                Integer value = sensorEventHandler.getValue(condition.getType(), sensorStateAvro);
+
+            boolean allConditionsMet = true;
+
+            for (Map.Entry<String, Condition> entry : conditions.entrySet()) {
+                String sensorId = entry.getKey();
+                Condition condition = entry.getValue();
+
+                SensorStateAvro sensorState = snapshot.getSensorsState().get(sensorId);
+
+                if (sensorState == null) {
+                    log.warn("Состояние сенсора {} отсутствует в снапшоте", sensorId);
+                    allConditionsMet = false;
+                    break;
+                }
+
+                SensorEventHandler<?> handler = sensorEventHandlers.get(sensorState.getData().getClass());
+                if (handler == null) {
+                    log.warn("Нет обработчика для типа сенсора {}", sensorState.getData().getClass());
+                    allConditionsMet = false;
+                    break;
+                }
+
+                Integer sensorValue = handler.getValue(condition.getType(), sensorState);
 
                 ConditionOperationAvro operation = condition.getOperation();
-                flag = switch (operation) {
-                    case EQUALS -> value.equals(condition.getValue());
-                    case LOWER_THAN ->  value < condition.getValue();
-                    case GREATER_THAN ->   value > condition.getValue();
+                boolean conditionMet = switch (operation) {
+                    case EQUALS -> sensorValue.equals(condition.getValue());
+                    case LOWER_THAN -> sensorValue < condition.getValue();
+                    case GREATER_THAN -> sensorValue > condition.getValue();
                 };
+
+                if (!conditionMet) {
+                    allConditionsMet = false;
+                    break;
+                }
             }
-            if (flag) {
+
+            if (allConditionsMet) {
                 result.add(scenario);
             }
         }
