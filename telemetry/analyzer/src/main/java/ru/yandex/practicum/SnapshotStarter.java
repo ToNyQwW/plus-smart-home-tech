@@ -29,21 +29,25 @@ public class SnapshotStarter {
         this.snapshotService = snapshotService;
         this.kafkaConfig = kafkaConfig.getSnapshotConsumer();
         this.consumer = new KafkaConsumer<>(this.kafkaConfig.getProperties());
+
+        Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
     }
 
     public void start() {
-        Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
-
         try {
             consumer.subscribe(List.of(kafkaConfig.getTopic()));
+
             while (true) {
                 ConsumerRecords<String, SensorsSnapshotAvro> records = consumer.poll(kafkaConfig.getPollTimeout());
+
+                if (records.isEmpty()) {
+                    continue;
+                }
 
                 int count = 0;
                 for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
                     handleRecord(record);
-                    manageOffsets(record, count, consumer);
-                    count++;
+                    manageOffsets(record, count++);
                 }
                 consumer.commitAsync();
             }
@@ -52,7 +56,6 @@ public class SnapshotStarter {
         } catch (Exception e) {
             log.error("Ошибка во время обработки снапшота датчиков", e);
         } finally {
-
             try {
                 consumer.commitSync(currentOffsets);
             } finally {
@@ -61,8 +64,7 @@ public class SnapshotStarter {
         }
     }
 
-    private void manageOffsets(ConsumerRecord<String, SensorsSnapshotAvro> record, int count,
-                               KafkaConsumer<String, SensorsSnapshotAvro> consumer) {
+    private void manageOffsets(ConsumerRecord<String, SensorsSnapshotAvro> record, int count) {
         currentOffsets.put(
                 new TopicPartition(record.topic(), record.partition()),
                 new OffsetAndMetadata(record.offset() + 1)
