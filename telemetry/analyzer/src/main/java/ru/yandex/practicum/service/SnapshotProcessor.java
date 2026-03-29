@@ -114,11 +114,11 @@ public class SnapshotProcessor implements Runnable {
     }
 
     private ActionTypeProto mapToActionTypeProto(ActionTypeAvro avro) {
-        for (ActionTypeProto value : ActionTypeProto.values()) {
-            if(value.name().equalsIgnoreCase(avro.name())) {
-                return value;
-            }
-        }
-        return null;
+        return switch (avro) {
+            case ACTIVATE -> ActionTypeProto.ACTIVATE;
+            case DEACTIVATE -> ActionTypeProto.DEACTIVATE;
+            case INVERSE -> ActionTypeProto.INVERSE;
+            case SET_VALUE -> ActionTypeProto.SET_VALUE;
+        };
     }
 }
