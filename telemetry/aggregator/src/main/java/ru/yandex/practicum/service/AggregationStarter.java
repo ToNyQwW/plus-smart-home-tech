@@ -4,8 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.configuration.KafkaConfig;
@@ -13,7 +15,9 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -25,6 +29,7 @@ public class AggregationStarter {
     private final KafkaConfig.ConsumerConfig consumerConfig;
     private final KafkaConsumer<String, SensorEventAvro> consumer;
     private final KafkaProducer<String, SensorsSnapshotAvro> producer;
+    private final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
 
 
     public AggregationStarter(KafkaConfig kafkaConfig, SnapshotService snapshotService) {
@@ -48,22 +53,24 @@ public class AggregationStarter {
                     continue;
                 }
 
+                int count = 0;
                 for (ConsumerRecord<String, SensorEventAvro> record : records) {
                     log.trace("Обработка показания датчика от хаба {} из партиции {} со смещением: {}",
                             record.key(), record.partition(), record.offset());
                     handleEvent(record.value());
+                    manageOffsets(record, count++);
                 }
-                consumer.commitSync();
+                producer.flush();
+                consumer.commitAsync();
             }
 
         } catch (WakeupException ignored) {
         } catch (Exception e) {
             log.error("Ошибка во время обработки событий от датчиков", e);
         } finally {
-
             try {
                 producer.flush();
-                consumer.commitSync();
+                consumer.commitSync(currentOffsets);
             } finally {
                 consumer.close();
                 producer.close();
@@ -98,5 +105,20 @@ public class AggregationStarter {
                 event.getId(), hubId, timestamp, topic);
 
         producer.send(record);
+    }
+
+    private void manageOffsets(ConsumerRecord<String, SensorEventAvro> record, int count) {
+        currentOffsets.put(
+                new TopicPartition(record.topic(), record.partition()),
+                new OffsetAndMetadata(record.offset() + 1)
+        );
+
+        if (count % 10 == 0) {
+            consumer.commitAsync(currentOffsets, (offsets, exception) -> {
+                if (exception != null) {
+                    log.warn("Ошибка во время фиксации оффсетов: {}", offsets, exception);
+                }
+            });
+        }
     }
 }

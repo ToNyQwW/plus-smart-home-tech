@@ -9,3 +9,7 @@ collector:
       topics:
         sensor: telemetry.sensors.v1
         hub: telemetry.hubs.v1
+grpc:
+  server:
+    port: 59091
+    reflection-service-enabled: true
