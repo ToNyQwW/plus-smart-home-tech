@@ -124,7 +124,7 @@ public class SnapshotProcessor implements Runnable {
                 new OffsetAndMetadata(record.offset() + 1)
         );
 
-        if(count % 20 == 0) {
+        if(count % 10 == 0) {
             consumer.commitAsync(currentOffsets, (offsets, exception) -> {
                 if(exception != null) {
                     log.warn("Ошибка во время фиксации оффсетов: {}", offsets, exception);

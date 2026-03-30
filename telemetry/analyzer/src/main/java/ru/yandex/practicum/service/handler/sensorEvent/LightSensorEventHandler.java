@@ -1,15 +1,17 @@
 package ru.yandex.practicum.service.handler.sensorEvent;
 
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.LightSensorAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
 import ru.yandex.practicum.service.handler.SensorEventHandler;
 
-public class LightSensorEventHandler implements SensorEventHandler<LightSensorAvro> {
+@Component
+public class LightSensorEventHandler implements SensorEventHandler {
 
     @Override
-    public Class<LightSensorAvro> getPayloadType() {
-        return LightSensorAvro.class;
+    public String getPayloadType() {
+        return LightSensorAvro.class.getName();
     }
 
     @Override

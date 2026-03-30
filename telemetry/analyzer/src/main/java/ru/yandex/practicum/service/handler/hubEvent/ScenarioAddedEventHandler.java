@@ -11,13 +11,13 @@ import ru.yandex.practicum.service.handler.HubEventHandler;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ScenarioAddedEventHandler implements HubEventHandler<ScenarioAddedEventAvro> {
+public class ScenarioAddedEventHandler implements HubEventHandler {
 
     private final ScenarioService scenarioService;
 
     @Override
-    public Class<ScenarioAddedEventAvro> getPayloadType() {
-        return ScenarioAddedEventAvro.class;
+    public String getPayloadType() {
+        return ScenarioAddedEventAvro.class.getName();
     }
 
     @Override

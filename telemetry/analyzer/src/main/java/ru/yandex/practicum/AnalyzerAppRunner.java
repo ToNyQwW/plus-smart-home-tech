@@ -15,10 +15,8 @@ public class AnalyzerAppRunner {
         ConfigurableApplicationContext context =
                 SpringApplication.run(AnalyzerAppRunner.class, args);
 
-        final HubEventProcessor hubEventProcessor =
-                context.getBean(HubEventProcessor.class);
-        SnapshotProcessor snapshotProcessor =
-                context.getBean(SnapshotProcessor.class);
+        HubEventProcessor hubEventProcessor = context.getBean(HubEventProcessor.class);
+        SnapshotProcessor snapshotProcessor = context.getBean(SnapshotProcessor.class);
 
         Thread hubEventsThread = new Thread(hubEventProcessor);
         hubEventsThread.setName("HubEventHandlerThread");

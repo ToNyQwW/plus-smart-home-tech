@@ -1,15 +1,17 @@
 package ru.yandex.practicum.service.handler.sensorEvent;
 
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
 import ru.yandex.practicum.kafka.telemetry.event.TemperatureSensorAvro;
 import ru.yandex.practicum.service.handler.SensorEventHandler;
 
-public class TemperatureSensorEventHandler implements SensorEventHandler<TemperatureSensorAvro> {
+@Component
+public class TemperatureSensorEventHandler implements SensorEventHandler {
 
     @Override
-    public Class<TemperatureSensorAvro> getPayloadType() {
-        return TemperatureSensorAvro.class;
+    public String getPayloadType() {
+        return TemperatureSensorAvro.class.getName();
     }
 
     @Override

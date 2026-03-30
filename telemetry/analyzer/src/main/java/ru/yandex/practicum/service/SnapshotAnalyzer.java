@@ -2,6 +2,7 @@ package ru.yandex.practicum.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dal.entity.Condition;
 import ru.yandex.practicum.dal.entity.Scenario;
 import ru.yandex.practicum.dal.repository.ScenarioRepository;
@@ -16,12 +17,13 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 public class SnapshotAnalyzer {
 
     private final ScenarioRepository scenarioRepository;
-    private final Map<Class<?>, SensorEventHandler<?>> sensorEventHandlers;
+    private final Map<String, SensorEventHandler> sensorEventHandlers;
 
-    public SnapshotAnalyzer(ScenarioRepository scenarioRepository, List<SensorEventHandler<?>> handlers) {
+    public SnapshotAnalyzer(ScenarioRepository scenarioRepository, List<SensorEventHandler> handlers) {
         this.scenarioRepository = scenarioRepository;
         this.sensorEventHandlers = handlers.stream()
                 .collect(Collectors.toMap(
@@ -30,6 +32,7 @@ public class SnapshotAnalyzer {
                 ));
     }
 
+    @Transactional(readOnly = true)
     public List<Scenario> process(SensorsSnapshotAvro snapshot) {
         return scenarioRepository
                 .findByHubId(snapshot.getHubId())
@@ -53,7 +56,8 @@ public class SnapshotAnalyzer {
         }
 
         SensorStateAvro sensorStateAvro = snapshot.getSensorsState().get(sensorId);
-        SensorEventHandler<?> sensorEventHandler = sensorEventHandlers.get(sensorStateAvro.getData().getClass());
+        String dataType = sensorStateAvro.getData().getClass().getName();
+        SensorEventHandler sensorEventHandler = sensorEventHandlers.get(dataType);
 
         Integer value = sensorEventHandler.getValue(condition.getType(), sensorStateAvro);
 
