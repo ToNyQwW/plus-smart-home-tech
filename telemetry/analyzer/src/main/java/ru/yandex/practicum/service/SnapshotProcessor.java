@@ -6,6 +6,8 @@ import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.configuration.KafkaConfig;
@@ -18,6 +20,7 @@ import ru.yandex.practicum.kafka.telemetry.event.ActionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +35,7 @@ public class SnapshotProcessor implements Runnable {
     private final SnapshotAnalyzer snapshotAnalyzer;
     private final KafkaConfig.ConsumerConfig kafkaConfig;
     private final KafkaConsumer<String, SensorsSnapshotAvro> consumer;
+    private final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
 
     public SnapshotProcessor(KafkaConfig kafkaConfig, SnapshotAnalyzer snapshotAnalyzer,
                              @GrpcClient("hub-router") HubRouterControllerBlockingStub hubRouterClient) {
@@ -55,7 +59,7 @@ public class SnapshotProcessor implements Runnable {
                 if (records.isEmpty()) {
                     continue;
                 }
-
+                int count = 0;
                 for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
                     List<Scenario> scenarios = snapshotAnalyzer.process(record.value());
                     if (!scenarios.isEmpty()) {
@@ -63,8 +67,9 @@ public class SnapshotProcessor implements Runnable {
                             sendActions(scenario);
                         }
                     }
+                    manageOffsets(record, count++);
                 }
-                consumer.commitSync();
+                consumer.commitAsync();
             }
 
         } catch (WakeupException ignored) {
@@ -73,7 +78,7 @@ public class SnapshotProcessor implements Runnable {
         } finally {
 
             try {
-                consumer.commitSync();
+                consumer.commitSync(currentOffsets);
             } finally {
                 consumer.close();
             }
@@ -110,6 +115,21 @@ public class SnapshotProcessor implements Runnable {
             } catch (Exception e) {
                 log.error("Ошибка при отправке действия для хаба");
             }
+        }
+    }
+
+    private void manageOffsets(ConsumerRecord<String, SensorsSnapshotAvro> record, int count) {
+        currentOffsets.put(
+                new TopicPartition(record.topic(), record.partition()),
+                new OffsetAndMetadata(record.offset() + 1)
+        );
+
+        if(count % 20 == 0) {
+            consumer.commitAsync(currentOffsets, (offsets, exception) -> {
+                if(exception != null) {
+                    log.warn("Ошибка во время фиксации оффсетов: {}", offsets, exception);
+                }
+            });
         }
     }
 
