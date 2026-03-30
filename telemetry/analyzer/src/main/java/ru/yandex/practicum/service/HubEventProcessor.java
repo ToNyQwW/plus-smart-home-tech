@@ -1,34 +1,36 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.consumer.OffsetAndMetadata;
-import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.configuration.KafkaConfig;
-import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
-import ru.yandex.practicum.service.HubEventService;
+import ru.yandex.practicum.kafka.telemetry.event.*;
+import ru.yandex.practicum.service.handler.HubEventHandler;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class HubEventStarter implements Runnable {
+public class HubEventProcessor implements Runnable {
 
-    private final HubEventService hubEventService;
     private final KafkaConfig.ConsumerConfig kafkaConfig;
     private final KafkaConsumer<String, HubEventAvro> consumer;
-    private final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
+    private final Map<Class<?>, HubEventHandler<?>> hubEventHandlers;
 
-    public HubEventStarter(KafkaConfig kafkaConfig, HubEventService hubEventService) {
-        this.hubEventService = hubEventService;
+    public HubEventProcessor(KafkaConfig kafkaConfig, List<HubEventHandler<?>> handlers) {
         this.kafkaConfig = kafkaConfig.getHubEventConsumer();
         this.consumer = new KafkaConsumer<>(kafkaConfig.getHubEventConsumer().getProperties());
+        this.hubEventHandlers = handlers.stream()
+                .collect(Collectors.toMap(
+                        HubEventHandler::getPayloadType,
+                        Function.identity()
+                ));
 
         Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
     }
@@ -45,42 +47,24 @@ public class HubEventStarter implements Runnable {
                     continue;
                 }
 
-                int count = 0;
                 for (ConsumerRecord<String, HubEventAvro> record : records) {
-                    handleRecord(record);
-                    manageOffsets(record, count++);
+                    Object payload = record.value().getPayload();
+                    HubEventHandler<?> hubEventHandler = hubEventHandlers.get(payload.getClass());
+                    hubEventHandler.handle(record.key(), record.value());
                 }
-                consumer.commitAsync();
+                consumer.commitSync();
             }
 
         } catch (WakeupException ignored) {
         } catch (Exception e) {
             log.error("Ошибка во время обработки сообщений от хаба", e);
         } finally {
+
             try {
-                consumer.commitSync(currentOffsets);
+                consumer.commitSync();
             } finally {
                 consumer.close();
             }
         }
-    }
-
-    private void manageOffsets(ConsumerRecord<String, HubEventAvro> record, int count) {
-        currentOffsets.put(
-                new TopicPartition(record.topic(), record.partition()),
-                new OffsetAndMetadata(record.offset() + 1)
-        );
-
-        if (count % 10 == 0) {
-            consumer.commitAsync(currentOffsets, (offsets, exception) -> {
-                if (exception != null) {
-                    log.warn("Ошибка во время фиксации оффсетов: {}", offsets, exception);
-                }
-            });
-        }
-    }
-
-    private void handleRecord(ConsumerRecord<String, HubEventAvro> record) {
-        hubEventService.handle(record.value());
     }
 }

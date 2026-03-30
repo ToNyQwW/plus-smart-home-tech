@@ -1,28 +1,21 @@
 package ru.yandex.practicum.dal.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import ru.yandex.practicum.model.ActionType;
+import lombok.Setter;
+import ru.yandex.practicum.kafka.telemetry.event.ActionTypeAvro;
 
 @Entity
+@Getter @Setter
 @Table(name = "actions")
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Action {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    private ActionType type;
+    private ActionTypeAvro type;
 
-    @Column(name = "value")
     private Integer value;
 }
