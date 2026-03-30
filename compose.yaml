@@ -35,7 +35,7 @@ services:
     init: true
 
   postgres:
-    image: postgres:16
+    image: postgres:16.1
     container_name: postgres-analyzer
     environment:
       POSTGRES_DB: analyzer
@@ -43,9 +43,3 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./telemetry/analyzer/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-
-volumes:
-  postgres_data:

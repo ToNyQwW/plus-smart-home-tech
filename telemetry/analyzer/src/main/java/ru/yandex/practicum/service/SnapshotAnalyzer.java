@@ -53,10 +53,11 @@ public class SnapshotAnalyzer {
         }
 
         SensorStateAvro sensorStateAvro = snapshot.getSensorsState().get(sensorId);
-        SensorEventHandler<?> sensorEventHandler = sensorEventHandlers.get(sensorStateAvro.getData().getClass());
+        Class<?> aClass = sensorStateAvro.getData().getClass();
+        SensorEventHandler<?> sensorEventHandler = sensorEventHandlers.get(aClass);
 
         if (sensorEventHandler == null) {
-            log.warn("Нет обработчика для {}", sensorStateAvro.getData().getClass());
+            log.warn("Нет обработчика для {}", aClass);
             return false;
         }
 
