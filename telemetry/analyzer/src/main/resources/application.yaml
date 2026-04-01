@@ -28,6 +28,7 @@ kafka:
         "enable.auto.commit": false
       topic: "telemetry.snapshots.v1"
       poll-timeout: 500ms
+      commit-batch-size: 10
     hubEventConsumer:
       properties:
         "bootstrap.servers": localhost:9092
@@ -37,6 +38,7 @@ kafka:
         "enable.auto.commit": false
       topic: "telemetry.hubs.v1"
       poll-timeout: 2000ms
+      commit-batch-size: 10
 
 grpc:
   client:
