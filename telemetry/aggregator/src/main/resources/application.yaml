@@ -16,3 +16,4 @@ aggregator:
         "enable.auto.commit": false
       topic: "telemetry.sensors.v1"
       "poll-timeout": 100ms
+      commit-batch-size: 10

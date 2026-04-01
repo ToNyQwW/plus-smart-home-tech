@@ -34,5 +34,6 @@ public class KafkaConfig {
         private String topic;
         private Duration pollTimeout;
         private Properties properties;
+        private Integer commitBatchSize;
     }
 }

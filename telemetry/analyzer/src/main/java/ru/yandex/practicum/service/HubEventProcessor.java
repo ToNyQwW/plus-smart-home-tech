@@ -7,7 +7,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.configuration.KafkaConfig;
-import ru.yandex.practicum.kafka.telemetry.event.*;
+import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.service.handler.HubEventHandler;
 
 import java.util.List;
@@ -59,12 +59,7 @@ public class HubEventProcessor implements Runnable {
         } catch (Exception e) {
             log.error("Ошибка во время обработки сообщений от хаба", e);
         } finally {
-
-            try {
-                consumer.commitSync();
-            } finally {
-                consumer.close();
-            }
+            consumer.close();
         }
     }
 }

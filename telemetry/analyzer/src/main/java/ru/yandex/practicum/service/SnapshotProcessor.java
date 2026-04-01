@@ -76,12 +76,7 @@ public class SnapshotProcessor implements Runnable {
         } catch (Exception e) {
             log.error("Ошибка во время обработки снапшота датчиков", e);
         } finally {
-
-            try {
-                consumer.commitSync(currentOffsets);
-            } finally {
-                consumer.close();
-            }
+            consumer.close();
         }
     }
 
@@ -124,9 +119,9 @@ public class SnapshotProcessor implements Runnable {
                 new OffsetAndMetadata(record.offset() + 1)
         );
 
-        if(count % 10 == 0) {
+        if (count % kafkaConfig.getCommitBatchSize() == 0) {
             consumer.commitAsync(currentOffsets, (offsets, exception) -> {
-                if(exception != null) {
+                if (exception != null) {
                     log.warn("Ошибка во время фиксации оффсетов: {}", offsets, exception);
                 }
             });
