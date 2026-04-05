@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.store.CreateProductDto;
 import ru.yandex.practicum.dto.store.ProductDto;
+import ru.yandex.practicum.dto.store.UpdateProductDto;
 import ru.yandex.practicum.service.ShoppingStoreService;
 
 @RestController
@@ -17,5 +18,10 @@ public class ShoppingStoreController {
     @PutMapping
     public ProductDto createProduct(@RequestBody @Valid CreateProductDto productDto) {
         return shoppingStoreService.createProduct(productDto);
+    }
+
+    @PostMapping
+    public ProductDto updateProduct(@RequestBody @Valid UpdateProductDto productDto) {
+        return shoppingStoreService.updateProduct(productDto);
     }
 }

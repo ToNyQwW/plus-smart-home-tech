@@ -1,5 +1,6 @@
 package ru.yandex.practicum.dto.store;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Value;
 import ru.yandex.practicum.model.ProductCategory;
@@ -10,8 +11,9 @@ import java.util.UUID;
 
 @Value
 @Builder
-public class ProductDto {
+public class UpdateProductDto {
 
+    @NotNull
     UUID productId;
 
     String productName;

@@ -1,0 +1,17 @@
+package ru.yandex.practicum.exception;
+
+import lombok.Builder;
+import lombok.Data;
+import org.springframework.http.HttpStatus;
+
+@Data
+@Builder
+public class ProductNotFoundErrorResponse {
+    private Throwable cause;
+    private StackTraceElement[] stackTrace;
+    private HttpStatus httpStatus;
+    private String userMessage;
+    private String message;
+    private Throwable[] suppressed;
+    private String localizedMessage;
+}
