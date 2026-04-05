@@ -3,8 +3,8 @@ package ru.yandex.practicum.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.dto.CreateProductDto;
-import ru.yandex.practicum.dto.ProductDto;
+import ru.yandex.practicum.dto.store.CreateProductDto;
+import ru.yandex.practicum.dto.store.ProductDto;
 import ru.yandex.practicum.service.ShoppingStoreService;
 
 @RestController

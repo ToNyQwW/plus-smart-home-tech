@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.dal.entity.Product;
 import ru.yandex.practicum.dal.repository.ProductRepository;
-import ru.yandex.practicum.dto.CreateProductDto;
-import ru.yandex.practicum.dto.ProductDto;
+import ru.yandex.practicum.dto.store.CreateProductDto;
+import ru.yandex.practicum.dto.store.ProductDto;
 import ru.yandex.practicum.mapper.ProductMapper;
 
 @Slf4j
