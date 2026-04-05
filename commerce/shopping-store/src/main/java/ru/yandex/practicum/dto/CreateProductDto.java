@@ -8,12 +8,8 @@ import ru.yandex.practicum.model.ProductCategory;
 import ru.yandex.practicum.model.ProductState;
 import ru.yandex.practicum.model.QuantityState;
 
-import java.util.UUID;
-
 @Data
-public class ProductDto {
-
-    private UUID productId;
+public class CreateProductDto {
 
     @NotBlank
     private String productName;

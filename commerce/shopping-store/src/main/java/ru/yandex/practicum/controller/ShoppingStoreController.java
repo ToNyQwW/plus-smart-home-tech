@@ -2,10 +2,8 @@ package ru.yandex.practicum.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.dto.CreateProductDto;
 import ru.yandex.practicum.dto.ProductDto;
 import ru.yandex.practicum.service.ShoppingStoreService;
 
@@ -17,7 +15,7 @@ public class ShoppingStoreController {
     private final ShoppingStoreService shoppingStoreService;
 
     @PutMapping
-    public ProductDto createProduct(@RequestBody @Valid ProductDto productDto) {
+    public ProductDto createProduct(@RequestBody @Valid CreateProductDto productDto) {
         return shoppingStoreService.createProduct(productDto);
     }
 }

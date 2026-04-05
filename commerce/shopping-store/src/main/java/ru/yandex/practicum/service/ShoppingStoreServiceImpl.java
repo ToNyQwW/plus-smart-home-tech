@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.dal.entity.Product;
 import ru.yandex.practicum.dal.repository.ProductRepository;
+import ru.yandex.practicum.dto.CreateProductDto;
 import ru.yandex.practicum.dto.ProductDto;
 import ru.yandex.practicum.mapper.ProductMapper;
 
@@ -19,7 +20,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     private final ProductRepository productRepository;
 
     @Override
-    public ProductDto createProduct(ProductDto productDto) {
+    public ProductDto createProduct(CreateProductDto productDto) {
         log.info("метод createProduct. DTO: {}", productDto);
         Product product = productMapper.toProduct(productDto);
         Product savedProduct = productRepository.save(product);
