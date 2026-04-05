@@ -10,4 +10,6 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 public interface ProductMapper {
 
     Product toProduct(ProductDto productDto);
+
+    ProductDto toProductDto(Product product);
 }
