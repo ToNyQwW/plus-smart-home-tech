@@ -25,6 +25,16 @@ public class ShoppingStoreController {
 
     private final ShoppingStoreService shoppingStoreService;
 
+    @PutMapping
+    public ProductDto createProduct(@RequestBody @Valid CreateProductDto productDto) {
+        return shoppingStoreService.createProduct(productDto);
+    }
+
+    @GetMapping("/{productId}")
+    public ProductDto getProduct(@PathVariable UUID productId) {
+        return shoppingStoreService.getProductById(productId);
+    }
+
     @GetMapping
     public Page<ProductDto> getProducts(@RequestParam ProductCategory category,
                                         @PageableDefault(
@@ -34,28 +44,18 @@ public class ShoppingStoreController {
         return shoppingStoreService.getProductsByCategory(category, pageable);
     }
 
-    @GetMapping("/{productId}")
-    public ProductDto getProduct(@PathVariable UUID productId) {
-        return shoppingStoreService.getProductById(productId);
-    }
-
-    @PutMapping
-    public ProductDto createProduct(@RequestBody @Valid CreateProductDto productDto) {
-        return shoppingStoreService.createProduct(productDto);
-    }
-
     @PostMapping
     public ProductDto updateProduct(@RequestBody @Valid UpdateProductDto productDto) {
         return shoppingStoreService.updateProduct(productDto);
     }
 
-    @PostMapping("/removeProductFromStore")
-    public boolean deactivateProduct(@RequestBody UUID productId) {
-        return shoppingStoreService.deactivateProduct(productId);
-    }
-
     @PostMapping("/quantityState")
     public boolean setProductQuantityState(@RequestBody @Valid SetProductQuantityStateRequest request) {
         return shoppingStoreService.updateProductQuantityState(request);
+    }
+
+    @PostMapping("/removeProductFromStore")
+    public boolean deactivateProduct(@RequestBody UUID productId) {
+        return shoppingStoreService.deactivateProduct(productId);
     }
 }

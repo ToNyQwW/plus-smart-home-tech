@@ -14,13 +14,13 @@ public interface ShoppingStoreService {
 
     ProductDto createProduct(CreateProductDto productDto);
 
-    ProductDto updateProduct(UpdateProductDto productDto);
-
-    boolean deactivateProduct(UUID productId);
-
-    boolean updateProductQuantityState(SetProductQuantityStateRequest request);
-
     ProductDto getProductById(UUID productId);
 
     Page<ProductDto> getProductsByCategory(ProductCategory category, Pageable pageable);
+
+    ProductDto updateProduct(UpdateProductDto productDto);
+
+    boolean updateProductQuantityState(SetProductQuantityStateRequest request);
+
+    boolean deactivateProduct(UUID productId);
 }
