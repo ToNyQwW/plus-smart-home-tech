@@ -8,6 +8,8 @@ import ru.yandex.practicum.dto.store.ProductDto;
 import ru.yandex.practicum.dto.store.UpdateProductDto;
 import ru.yandex.practicum.service.ShoppingStoreService;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/shopping-store")
@@ -23,5 +25,10 @@ public class ShoppingStoreController {
     @PostMapping
     public ProductDto updateProduct(@RequestBody @Valid UpdateProductDto productDto) {
         return shoppingStoreService.updateProduct(productDto);
+    }
+
+    @PostMapping("/removeProductFromStore")
+    public boolean deactivateProduct(@RequestBody UUID productId) {
+        return shoppingStoreService.deactivateProduct(productId);
     }
 }

@@ -11,6 +11,7 @@ import ru.yandex.practicum.dto.store.ProductDto;
 import ru.yandex.practicum.dto.store.UpdateProductDto;
 import ru.yandex.practicum.exception.store.ProductNotFoundException;
 import ru.yandex.practicum.mapper.ProductMapper;
+import ru.yandex.practicum.model.ProductState;
 
 import java.util.UUID;
 
@@ -42,6 +43,21 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
         log.info("Product обновлен в БД: {}", productForUpdate);
 
         return productMapper.toProductDto(productForUpdate);
+    }
+
+    @Override
+    public boolean deactivateProduct(UUID productId) {
+        log.info("метод deactivateProduct. productID: {}", productId);
+        Product product = getProductOrElseThrow(productId);
+        if (product.getProductState() == ProductState.DEACTIVATE) {
+            log.info("Продукт уже деактивирован. Product: {}", product);
+            return false;
+        }
+        product.setProductState(ProductState.DEACTIVATE);
+        productRepository.save(product);
+        log.info("Продукт успешно деактивирован. Product: {}", product);
+
+        return true;
     }
 
     private Product getProductOrElseThrow(UUID productId) {
