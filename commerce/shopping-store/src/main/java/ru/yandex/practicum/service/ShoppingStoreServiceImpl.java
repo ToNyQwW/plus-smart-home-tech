@@ -8,10 +8,12 @@ import ru.yandex.practicum.dal.entity.Product;
 import ru.yandex.practicum.dal.repository.ProductRepository;
 import ru.yandex.practicum.dto.store.CreateProductDto;
 import ru.yandex.practicum.dto.store.ProductDto;
+import ru.yandex.practicum.dto.store.SetProductQuantityStateRequest;
 import ru.yandex.practicum.dto.store.UpdateProductDto;
 import ru.yandex.practicum.exception.store.ProductNotFoundException;
 import ru.yandex.practicum.mapper.ProductMapper;
 import ru.yandex.practicum.model.ProductState;
+import ru.yandex.practicum.model.QuantityState;
 
 import java.util.UUID;
 
@@ -48,6 +50,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     public boolean deactivateProduct(UUID productId) {
         log.info("метод deactivateProduct. productID: {}", productId);
+
         Product product = getProductOrElseThrow(productId);
         if (product.getProductState() == ProductState.DEACTIVATE) {
             log.info("Продукт уже деактивирован. Product: {}", product);
@@ -60,8 +63,25 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
         return true;
     }
 
+    @Override
+    public boolean updateProductQuantityState(SetProductQuantityStateRequest request) {
+        UUID productId = request.getProductId();
+        QuantityState quantityState = request.getQuantityState();
+        log.info("метод updateProductQuantityState. productID: {}, quantityState: {}", productId, quantityState);
+
+        Product product = getProductOrElseThrow(productId);
+        if (product.getQuantityState() == quantityState) {
+            log.info("quantityState продукта уже имеет значение: {}", quantityState);
+            return false;
+        }
+        product.setQuantityState(quantityState);
+        productRepository.save(product);
+        log.info("Продукт успешно обновил quantityState. Product: {}", product);
+
+        return true;
+    }
+
     private Product getProductOrElseThrow(UUID productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
+        return productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
     }
 }
