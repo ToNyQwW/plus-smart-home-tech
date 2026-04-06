@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ShoppingStoreRunner {
+public class ShoppingStoreAppRunner {
 
     public static void main(String[] args) {
-        SpringApplication.run(ShoppingStoreRunner.class, args);
+        SpringApplication.run(ShoppingStoreAppRunner.class, args);
     }
 }
