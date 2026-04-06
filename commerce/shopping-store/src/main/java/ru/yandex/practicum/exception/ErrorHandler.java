@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.exception.store.ProductNotFoundException;
+import ru.yandex.practicum.util.ErrorMessagesConstants;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -22,7 +23,7 @@ public class ErrorHandler {
                 .stackTrace(e.getStackTrace())
                 .httpStatus(NOT_FOUND)
                 .userMessage(exceptionMessage)
-                .message(ErrorMessages.PRODUCT_NOT_FOUND)
+                .message(ErrorMessagesConstants.PRODUCT_NOT_FOUND)
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();

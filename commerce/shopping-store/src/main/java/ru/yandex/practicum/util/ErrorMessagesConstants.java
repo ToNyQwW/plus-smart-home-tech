@@ -1,9 +1,9 @@
-package ru.yandex.practicum.exception;
+package ru.yandex.practicum.util;
 
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ErrorMessages {
+public class ErrorMessagesConstants {
 
     public static final String PRODUCT_NOT_FOUND = "Product not found";
 }

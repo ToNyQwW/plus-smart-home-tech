@@ -2,6 +2,8 @@ package ru.yandex.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dal.entity.Product;
@@ -12,6 +14,7 @@ import ru.yandex.practicum.dto.store.SetProductQuantityStateRequest;
 import ru.yandex.practicum.dto.store.UpdateProductDto;
 import ru.yandex.practicum.exception.store.ProductNotFoundException;
 import ru.yandex.practicum.mapper.ProductMapper;
+import ru.yandex.practicum.model.ProductCategory;
 import ru.yandex.practicum.model.ProductState;
 import ru.yandex.practicum.model.QuantityState;
 
@@ -89,6 +92,18 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
         log.info("Продукт успешно найден: {}", product);
         return productMapper.toProductDto(product);
+    }
+
+    @Override
+    public Page<ProductDto> getProductsByCategory(ProductCategory category, Pageable pageable) {
+        log.info("метод getProductsByCategory. поиск по категории: {}.\n" +
+                " Параметры пагинации: sort={}, pageSize:{}, pageNumber:{}",
+                category, pageable.getSort(), pageable.getPageSize(), pageable.getPageNumber());
+
+        Page<Product> products = productRepository.findByProductCategory(category, pageable);
+        log.info("количество найденных записей: {}", products.getContent().size());
+
+        return products.map(productMapper::toProductDto);
     }
 
     private Product getProductOrElseThrow(UUID productId) {
