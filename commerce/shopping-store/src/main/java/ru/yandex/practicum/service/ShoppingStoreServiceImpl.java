@@ -1,9 +1,9 @@
 package ru.yandex.practicum.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dal.entity.Product;
 import ru.yandex.practicum.dal.repository.ProductRepository;
 import ru.yandex.practicum.dto.store.CreateProductDto;
@@ -81,7 +81,18 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
         return true;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ProductDto getProductById(UUID productId) {
+        log.info("метод getProductById. productId: {}", productId);
+        Product product = getProductOrElseThrow(productId);
+
+        log.info("Продукт успешно найден: {}", product);
+        return productMapper.toProductDto(product);
+    }
+
     private Product getProductOrElseThrow(UUID productId) {
-        return productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
     }
 }

@@ -18,6 +18,11 @@ public class ShoppingStoreController {
 
     private final ShoppingStoreService shoppingStoreService;
 
+    @GetMapping("/{productId}")
+    public ProductDto getProduct(@PathVariable UUID productId) {
+        return shoppingStoreService.getProductById(productId);
+    }
+
     @PutMapping
     public ProductDto createProduct(@RequestBody @Valid CreateProductDto productDto) {
         return shoppingStoreService.createProduct(productDto);

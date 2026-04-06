@@ -1,6 +1,5 @@
 package ru.yandex.practicum.service;
 
-import jakarta.validation.Valid;
 import ru.yandex.practicum.dto.store.CreateProductDto;
 import ru.yandex.practicum.dto.store.ProductDto;
 import ru.yandex.practicum.dto.store.SetProductQuantityStateRequest;
@@ -17,4 +16,6 @@ public interface ShoppingStoreService {
     boolean deactivateProduct(UUID productId);
 
     boolean updateProductQuantityState(SetProductQuantityStateRequest request);
+
+    ProductDto getProductById(UUID productId);
 }
