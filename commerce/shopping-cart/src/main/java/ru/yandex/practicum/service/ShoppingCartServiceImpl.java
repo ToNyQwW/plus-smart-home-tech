@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dal.entity.ShoppingCart;
 import ru.yandex.practicum.dal.repository.ShoppingCartRepository;
+import ru.yandex.practicum.dto.cart.ChangeProductQuantityRequest;
 import ru.yandex.practicum.dto.cart.ShoppingCartDto;
 import ru.yandex.practicum.exception.cart.NoProductsInShoppingCartException;
 import ru.yandex.practicum.exception.cart.NotAuthorizedUserException;
@@ -52,12 +53,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         validateUsername(username);
         log.info("метод removeProducts. username: {}, products: {}", username, products);
 
-        Optional<ShoppingCart> shoppingCartOpt = shoppingCartRepository.findByUserNameAndCartState(username, OPENED);
-        if (shoppingCartOpt.isEmpty()) {
-            log.info("у пользователя: {} нет активной корзины", username);
-            throw new ShoppingCartNotFoundException("у пользователя: " + username + " нет активной корзины");
-        }
-        ShoppingCart shoppingCart = shoppingCartOpt.get();
+        ShoppingCart shoppingCart = getActiveShoppingCartOrElseThrow(username);
         Map<UUID, Long> cartProducts = shoppingCart.getProducts();
 
         List<UUID> missingProducts = products.stream()
@@ -72,6 +68,28 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
         products.forEach(cartProducts::remove);
         log.info("товары успешно удалены из корзины. shoppingCart: {}", shoppingCart);
+
+        return shoppingCartMapper.toShoppingCartDto(shoppingCart);
+    }
+
+    @Override
+    public ShoppingCartDto changeProductQuantity(String username, ChangeProductQuantityRequest request) {
+        validateUsername(username);
+        log.info("метод changeProductQuantity. username: {}, request: {}", username, request);
+
+        ShoppingCart shoppingCart = getActiveShoppingCartOrElseThrow(username);
+
+        UUID productId = request.getProductId();
+        Map<UUID, Long> cartProducts = shoppingCart.getProducts();
+
+        if (!cartProducts.containsKey(productId)) {
+            log.info("в корзине пользователя: {} нет товара с id: {}", username, productId);
+            throw new NoProductsInShoppingCartException(
+                    "в корзине пользователя: " + username + " нет товара с id: " + productId
+            );
+        }
+        cartProducts.put(productId, request.getNewQuantity());
+        log.info("товар c id {} успешно обновлен. shoppingCart: {}", productId, shoppingCart);
 
         return shoppingCartMapper.toShoppingCartDto(shoppingCart);
     }
@@ -97,6 +115,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (username == null || username.isEmpty()) {
             throw new NotAuthorizedUserException("Имя пользователя не должно быть пустым");
         }
+    }
+
+    private ShoppingCart getActiveShoppingCartOrElseThrow(String username) {
+        Optional<ShoppingCart> shoppingCartOpt = shoppingCartRepository.findByUserNameAndCartState(username, OPENED);
+        if (shoppingCartOpt.isEmpty()) {
+            log.info("у пользователя: {} нет активной корзины", username);
+            throw new ShoppingCartNotFoundException("у пользователя: " + username + " нет активной корзины");
+        }
+        return shoppingCartOpt.get();
     }
 
     private ShoppingCart getOrCreateShoppingCart(String username) {
