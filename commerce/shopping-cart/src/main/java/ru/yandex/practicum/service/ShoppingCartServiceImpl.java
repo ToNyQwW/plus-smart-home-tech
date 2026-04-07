@@ -28,6 +28,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartRepository shoppingCartRepository;
 
     @Override
+    public ShoppingCartDto getShoppingCart(String username) {
+        validateUsername(username);
+        log.info("метод getShoppingCart. username: {}", username);
+        ShoppingCart shoppingCart = getOrCreateShoppingCart(username);
+
+        return shoppingCartMapper.toShoppingCartDto(shoppingCart);
+    }
+
+    @Override
     public ShoppingCartDto addProducts(String username, Map<UUID, Long> products) {
         validateUsername(username);
         log.info("метод addProducts. username: {}, products: {}", username, products);

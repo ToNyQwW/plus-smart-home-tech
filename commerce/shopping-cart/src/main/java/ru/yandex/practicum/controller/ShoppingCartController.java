@@ -23,4 +23,9 @@ public class ShoppingCartController {
                                                      @RequestBody @NotEmpty Map<UUID, Long> products) {
         return shoppingCartService.addProducts(username, products);
     }
+
+    @GetMapping
+    public ShoppingCartDto getShoppingCart(@RequestParam String username) {
+        return shoppingCartService.getShoppingCart(username);
+    }
 }
