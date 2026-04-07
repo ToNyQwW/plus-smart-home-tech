@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.cart.ShoppingCartDto;
 import ru.yandex.practicum.service.ShoppingCartService;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,6 +28,12 @@ public class ShoppingCartController {
     @GetMapping
     public ShoppingCartDto getShoppingCart(@RequestParam String username) {
         return shoppingCartService.getShoppingCart(username);
+    }
+
+    @PostMapping("/remove")
+    public ShoppingCartDto removeFromShoppingCart(@RequestParam String username,
+                                                  @RequestBody @NotEmpty List<UUID> products) {
+        return shoppingCartService.removeProducts(username, products);
     }
 
     @DeleteMapping
