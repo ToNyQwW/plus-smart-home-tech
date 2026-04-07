@@ -28,4 +28,9 @@ public class ShoppingCartController {
     public ShoppingCartDto getShoppingCart(@RequestParam String username) {
         return shoppingCartService.getShoppingCart(username);
     }
+
+    @DeleteMapping
+    public void deactivateShoppingCart(@RequestParam String username) {
+        shoppingCartService.deactivateShoppingCart(username);
+    }
 }

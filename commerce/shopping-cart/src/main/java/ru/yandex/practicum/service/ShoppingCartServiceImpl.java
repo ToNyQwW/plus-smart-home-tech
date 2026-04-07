@@ -48,6 +48,23 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartMapper.toShoppingCartDto(shoppingCart);
     }
 
+    @Override
+    public void deactivateShoppingCart(String username) {
+        validateUsername(username);
+        log.info("метод deactivateShoppingCart. username: {}", username);
+
+        Optional<ShoppingCart> shoppingCartOpt = shoppingCartRepository.findByUserName(username);
+        if (shoppingCartOpt.isEmpty()) {
+            log.info("у пользователя: {} нет активной корзины", username);
+            return;
+        }
+        ShoppingCart shoppingCart = shoppingCartOpt.get();
+        if (shoppingCart.getCartState() == OPENED) {
+            shoppingCart.setCartState(CLOSED);
+        }
+        log.info("корзина пользователя: {} c id: {} деактивирована", username, shoppingCart.getCartId());
+    }
+
     private void validateUsername(String username) {
         if (username == null || username.isEmpty()) {
             throw new NotAuthorizedUserException("Имя пользователя не должно быть пустым");

@@ -34,7 +34,7 @@ public class ShoppingCart {
     @Builder.Default
     @Column(name = "quantity")
     @MapKeyColumn(name = "product_id")
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "shopping_carts_products", joinColumns = @JoinColumn(name = "cart_id"))
     private Map<UUID, Long> products = new HashMap<>();
 

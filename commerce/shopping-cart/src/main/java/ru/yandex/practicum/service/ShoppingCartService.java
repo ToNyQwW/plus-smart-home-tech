@@ -10,4 +10,6 @@ public interface ShoppingCartService {
     ShoppingCartDto getShoppingCart(String username);
 
     ShoppingCartDto addProducts(String username, Map<UUID, Long> products);
+
+    void deactivateShoppingCart(String username);
 }
