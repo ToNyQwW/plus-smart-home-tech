@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dal.entity.ShoppingCart;
 import ru.yandex.practicum.dal.repository.ShoppingCartRepository;
 import ru.yandex.practicum.dto.cart.ShoppingCartDto;
+import ru.yandex.practicum.exception.cart.NotAuthorizedUserException;
 import ru.yandex.practicum.mapper.ShoppingCartMapper;
 
 import java.util.HashMap;
@@ -28,6 +29,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartDto addProducts(String username, Map<UUID, Long> products) {
+        validateUsername(username);
         log.info("метод addProducts. username: {}, products: {}", username, products);
 
         ShoppingCart shoppingCart = getOrCreateShoppingCart(username);
@@ -35,6 +37,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         log.info("товары успешно добавлены в корзину. shoppingCart: {}", shoppingCart);
 
         return shoppingCartMapper.toShoppingCartDto(shoppingCart);
+    }
+
+    private void validateUsername(String username) {
+        if (username == null || username.isEmpty()) {
+            throw new NotAuthorizedUserException("Имя пользователя не должно быть пустым");
+        }
     }
 
     private ShoppingCart getOrCreateShoppingCart(String username) {

@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 
 @Data
 @Builder
-public class ProductNotFoundErrorResponse {
+public class ErrorResponse {
+
     private Throwable cause;
     private StackTraceElement[] stackTrace;
     private HttpStatus httpStatus;
