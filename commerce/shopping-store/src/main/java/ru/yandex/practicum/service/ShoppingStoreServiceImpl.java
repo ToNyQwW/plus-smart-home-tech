@@ -31,10 +31,10 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     public ProductDto createProduct(CreateProductDto productDto) {
-        log.info("метод createProduct. DTO: {}", productDto);
+        log.info("Метод createProduct. DTO: {}", productDto);
         Product product = productMapper.toProduct(productDto);
         Product savedProduct = productRepository.save(product);
-        log.info("Product сохранен в БД с ID: {}", savedProduct.getProductId());
+        log.info("Товар сохранен в БД с ID: {}", savedProduct.getProductId());
 
         return productMapper.toProductDto(savedProduct);
     }
@@ -42,33 +42,33 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     @Transactional(readOnly = true)
     public ProductDto getProductById(UUID productId) {
-        log.info("метод getProductById. productId: {}", productId);
+        log.info("Метод getProductById. productId: {}", productId);
         Product product = getProductOrElseThrow(productId);
 
-        log.info("Продукт успешно найден: {}", product);
+        log.info("Товар успешно найден: {}", product);
         return productMapper.toProductDto(product);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<ProductDto> getProductsByCategory(ProductCategory category, Pageable pageable) {
-        log.info("метод getProductsByCategory. поиск по категории: {}.\n" +
+        log.info("Метод getProductsByCategory. поиск по категории: {}.\n" +
                         " Параметры пагинации: sort={}, pageSize:{}, pageNumber:{}",
                 category, pageable.getSort(), pageable.getPageSize(), pageable.getPageNumber());
 
         Page<Product> products = productRepository.findByProductCategory(category, pageable);
-        log.info("количество найденных записей: {}", products.getContent().size());
+        log.info("Количество найденных записей: {}", products.getContent().size());
 
         return products.map(productMapper::toProductDto);
     }
 
     @Override
     public ProductDto updateProduct(UpdateProductDto productDto) {
-        log.info("метод updateProduct. DTO: {}", productDto);
+        log.info("Метод updateProduct. DTO: {}", productDto);
         Product productForUpdate = getProductOrElseThrow(productDto.getProductId());
         productMapper.updateProduct(productDto, productForUpdate);
         productRepository.save(productForUpdate);
-        log.info("Product обновлен в БД: {}", productForUpdate);
+        log.info("Товар обновлен в БД: {}", productForUpdate);
 
         return productMapper.toProductDto(productForUpdate);
     }
@@ -77,16 +77,16 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     public boolean updateProductQuantityState(SetProductQuantityStateRequest request) {
         UUID productId = request.getProductId();
         QuantityState quantityState = request.getQuantityState();
-        log.info("метод updateProductQuantityState. productID: {}, quantityState: {}", productId, quantityState);
+        log.info("Метод updateProductQuantityState. productID: {}, quantityState: {}", productId, quantityState);
 
         Product product = getProductOrElseThrow(productId);
         if (product.getQuantityState() == quantityState) {
-            log.info("quantityState продукта уже имеет значение: {}", quantityState);
+            log.info("quantityState товара уже имеет значение: {}", quantityState);
             return false;
         }
         product.setQuantityState(quantityState);
         productRepository.save(product);
-        log.info("Продукт успешно обновил quantityState. Product: {}", product);
+        log.info("Товар успешно обновил quantityState. Product: {}", product);
 
         return true;
     }
@@ -97,18 +97,18 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
         Product product = getProductOrElseThrow(productId);
         if (product.getProductState() == ProductState.DEACTIVATE) {
-            log.info("Продукт уже деактивирован. Product: {}", product);
+            log.info("Товар уже деактивирован. Product: {}", product);
             return false;
         }
         product.setProductState(ProductState.DEACTIVATE);
         productRepository.save(product);
-        log.info("Продукт успешно деактивирован. Product: {}", product);
+        log.info("Товар успешно деактивирован. Product: {}", product);
 
         return true;
     }
 
     private Product getProductOrElseThrow(UUID productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
+                .orElseThrow(() -> new ProductNotFoundException("Товар с Id: " + productId +" не найден"));
     }
 }

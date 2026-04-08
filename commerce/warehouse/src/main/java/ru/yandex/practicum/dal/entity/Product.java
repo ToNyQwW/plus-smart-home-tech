@@ -17,12 +17,10 @@ public class Product {
 
     @Id
     @Column(name = "product_id")
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID productId;
 
-    @Builder.Default
     @Column(name = "fragile")
-    private Boolean fragile = false;
+    private boolean fragile;
 
     @Column(name = "width")
     private double width;
