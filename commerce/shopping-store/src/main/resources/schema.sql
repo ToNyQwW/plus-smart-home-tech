@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS products
+CREATE TABLE IF NOT EXISTS shopping_store_products
 (
     product_id       UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     product_name     VARCHAR(255)   NOT NULL,
