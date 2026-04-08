@@ -8,6 +8,7 @@ import ru.yandex.practicum.exception.warehouse.ProductAlreadyExistsException;
 import ru.yandex.practicum.util.ErrorMessagesConstants;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Slf4j
 @RestControllerAdvice
@@ -24,6 +25,22 @@ public class ErrorHandler {
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.PRODUCT_ALREADY_EXISTS)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ErrorResponse handleProductNotFoundException(ProductNotFoundException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception ProductNotFoundException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(BAD_REQUEST)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.PRODUCT_NOT_FOUND)
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();
