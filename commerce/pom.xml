@@ -13,6 +13,7 @@
         <module>shopping-store</module>
         <module>interaction-api</module>
         <module>shopping-cart</module>
+        <module>warehouse</module>
     </modules>
 
     <artifactId>commerce</artifactId>
