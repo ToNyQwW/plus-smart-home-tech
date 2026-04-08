@@ -7,6 +7,8 @@ public class ErrorMessagesConstants {
 
     public static final String UNAUTHORIZED = "Unauthorized";
 
+    public static final String LOW_QUANTITY_IN_WAREHOUSE = "Low Quantity in Warehouse";
+
     public static final String PRODUCT_NOT_FOUND = "Product not found";
 
     public static final String PRODUCT_ALREADY_EXISTS = "Product already exists";

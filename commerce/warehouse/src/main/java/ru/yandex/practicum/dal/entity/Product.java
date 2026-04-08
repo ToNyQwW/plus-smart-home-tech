@@ -36,4 +36,9 @@ public class Product {
 
     @Column(name = "quantity")
     private long quantity;
+
+    @Transient
+    public double getVolume() {
+        return width * height * depth;
+    }
 }
