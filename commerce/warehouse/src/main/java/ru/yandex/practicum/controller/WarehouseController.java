@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.warehouse.AddProductToWarehouseRequest;
+import ru.yandex.practicum.dto.warehouse.AddressDto;
 import ru.yandex.practicum.dto.warehouse.NewProductInWarehouseRequest;
 import ru.yandex.practicum.service.WarehouseService;
 
@@ -22,5 +23,10 @@ public class WarehouseController {
     @PostMapping("/add")
     public void addProductToWarehouse(@RequestBody @Valid AddProductToWarehouseRequest request) {
         warehouseService.addProductToWarehouse(request);
+    }
+
+    @GetMapping("/address")
+    public AddressDto getAddress() {
+        return warehouseService.getAddress();
     }
 }
