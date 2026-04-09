@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.client.ShoppingCartClient;
 import ru.yandex.practicum.dto.cart.ChangeProductQuantityRequest;
 import ru.yandex.practicum.dto.cart.ShoppingCartDto;
 import ru.yandex.practicum.service.ShoppingCartService;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/shopping-cart")
-public class ShoppingCartController {
+public class ShoppingCartController implements ShoppingCartClient {
 
     private final ShoppingCartService shoppingCartService;
 

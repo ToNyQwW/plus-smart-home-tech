@@ -1,9 +1,11 @@
 package ru.yandex.practicum.service;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.client.WarehouseClient;
 import ru.yandex.practicum.dal.entity.ShoppingCart;
 import ru.yandex.practicum.dal.repository.ShoppingCartRepository;
 import ru.yandex.practicum.dto.cart.ChangeProductQuantityRequest;
@@ -11,6 +13,7 @@ import ru.yandex.practicum.dto.cart.ShoppingCartDto;
 import ru.yandex.practicum.exception.cart.NoProductsInShoppingCartException;
 import ru.yandex.practicum.exception.cart.NotAuthorizedUserException;
 import ru.yandex.practicum.exception.cart.ShoppingCartNotFoundException;
+import ru.yandex.practicum.exception.warehouse.LowQuantityException;
 import ru.yandex.practicum.mapper.ShoppingCartMapper;
 
 import java.util.*;
@@ -24,6 +27,7 @@ import static ru.yandex.practicum.model.ShoppingCartState.OPENED;
 @RequiredArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
+    private final WarehouseClient warehouseClient;
     private final ShoppingCartMapper shoppingCartMapper;
     private final ShoppingCartRepository shoppingCartRepository;
 
@@ -42,10 +46,19 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         log.info("метод addProducts. username: {}, products: {}", username, products);
 
         ShoppingCart shoppingCart = getOrCreateShoppingCart(username);
-        shoppingCart.addProducts(products);
-        log.info("товары успешно добавлены в корзину. shoppingCart: {}", shoppingCart);
 
-        return shoppingCartMapper.toShoppingCartDto(shoppingCart);
+        ShoppingCartDto shoppingCartDto = shoppingCartMapper.toShoppingCartDto(shoppingCart);
+        shoppingCartDto.getProducts().putAll(products);
+        try {
+            log.info("Запрос к сервису Warehouse для проверки доступности товаров");
+            warehouseClient.checkProductsForShoppingCart(shoppingCartDto);
+            shoppingCart.addProducts(products);
+            log.info("товары успешно добавлены в корзину. shoppingCart: {}", shoppingCart);
+            return shoppingCartDto;
+
+        } catch (FeignException e) {
+            throw new LowQuantityException("Недостаточно товаров на складе");
+        }
     }
 
     @Override

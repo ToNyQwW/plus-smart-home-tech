@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.exception.cart.NoProductsInShoppingCartException;
 import ru.yandex.practicum.exception.cart.NotAuthorizedUserException;
 import ru.yandex.practicum.exception.cart.ShoppingCartNotFoundException;
+import ru.yandex.practicum.exception.warehouse.LowQuantityException;
 import ru.yandex.practicum.util.ErrorMessagesConstants;
 
 import static org.springframework.http.HttpStatus.*;
@@ -58,6 +59,22 @@ public class ErrorHandler {
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.NO_PRODUCTS_IN_SHOPPING_CART)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(LowQuantityException.class)
+    public ErrorResponse handleLowQuantityException(LowQuantityException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception LowQuantityException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(BAD_REQUEST)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.LOW_QUANTITY_IN_WAREHOUSE)
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();

@@ -6,11 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.client.ShoppingStoreClient;
 import ru.yandex.practicum.dto.store.CreateProductDto;
 import ru.yandex.practicum.dto.store.ProductDto;
 import ru.yandex.practicum.dto.store.SetProductQuantityStateRequest;
 import ru.yandex.practicum.dto.store.UpdateProductDto;
 import ru.yandex.practicum.model.ProductCategory;
+import ru.yandex.practicum.model.QuantityState;
 import ru.yandex.practicum.service.ShoppingStoreService;
 import ru.yandex.practicum.util.PaginationConstants;
 
@@ -21,7 +23,7 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/shopping-store")
-public class ShoppingStoreController {
+public class ShoppingStoreController implements ShoppingStoreClient {
 
     private final ShoppingStoreService shoppingStoreService;
 
@@ -50,7 +52,11 @@ public class ShoppingStoreController {
     }
 
     @PostMapping("/quantityState")
-    public boolean setProductQuantityState(@RequestBody @Valid SetProductQuantityStateRequest request) {
+    public boolean setProductQuantityState(@RequestParam UUID productId, @RequestParam QuantityState quantityState) {
+        SetProductQuantityStateRequest request = SetProductQuantityStateRequest.builder()
+                .productId(productId)
+                .quantityState(quantityState)
+                .build();
         return shoppingStoreService.updateProductQuantityState(request);
     }
 
