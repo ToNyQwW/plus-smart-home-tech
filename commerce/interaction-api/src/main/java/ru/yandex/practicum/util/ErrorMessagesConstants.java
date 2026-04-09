@@ -15,5 +15,7 @@ public class ErrorMessagesConstants {
 
     public static final String LOW_QUANTITY_IN_WAREHOUSE = "Low Quantity in Warehouse";
 
+    public static final String WAREHOUSE_SERVICE_UNAVAILABLE = "Warehouse service unavailable";
+
     public static final String NO_PRODUCTS_IN_SHOPPING_CART = "Products int shopping cart not found";
 }

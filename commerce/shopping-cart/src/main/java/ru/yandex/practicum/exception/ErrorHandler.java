@@ -8,6 +8,7 @@ import ru.yandex.practicum.exception.cart.NoProductsInShoppingCartException;
 import ru.yandex.practicum.exception.cart.NotAuthorizedUserException;
 import ru.yandex.practicum.exception.cart.ShoppingCartNotFoundException;
 import ru.yandex.practicum.exception.warehouse.LowQuantityException;
+import ru.yandex.practicum.exception.warehouse.WarehouseServiceUnavailableException;
 import ru.yandex.practicum.util.ErrorMessagesConstants;
 
 import static org.springframework.http.HttpStatus.*;
@@ -75,6 +76,22 @@ public class ErrorHandler {
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.LOW_QUANTITY_IN_WAREHOUSE)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    @ExceptionHandler(WarehouseServiceUnavailableException.class)
+    public ErrorResponse handleWarehouseServiceUnavailableException(WarehouseServiceUnavailableException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception WarehouseServiceUnavailableException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(SERVICE_UNAVAILABLE)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.WAREHOUSE_SERVICE_UNAVAILABLE)
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();
