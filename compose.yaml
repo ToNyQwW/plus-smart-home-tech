@@ -44,12 +44,32 @@ services:
     ports:
       - "5432:5432"
 
-  postgres-commerce:
+  shopping-store-db:
     image: postgres:16.1
-    container_name: postgres-commerce
+    container_name: shopping-store-db
     environment:
-      POSTGRES_DB: commerce
+      POSTGRES_DB: shopping-store
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - "5433:5432"
+
+  shopping-cart-db:
+    image: postgres:16.1
+    container_name: shopping-cart-db
+    environment:
+      POSTGRES_DB: shopping-cart
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+
+  warehouse-db:
+    image: postgres:16.1
+    container_name: warehouse-db
+    environment:
+      POSTGRES_DB: warehouse
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
