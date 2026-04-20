@@ -9,6 +9,13 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <modules>
+        <module>shopping-store</module>
+        <module>interaction-api</module>
+        <module>shopping-cart</module>
+        <module>warehouse</module>
+    </modules>
+
     <artifactId>commerce</artifactId>
     <packaging>pom</packaging>
 
