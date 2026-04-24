@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS address
     city       VARCHAR(50) NOT NULL,
     street     VARCHAR(50) NOT NULL,
     house      VARCHAR(15) NOT NULL,
-    flat       VARCHAR(10)
+    flat       VARCHAR(10) NOT NULL,
+    CONSTRAINT uniq_address UNIQUE (country, city, street, house, flat)
 );
 
 CREATE TABLE IF NOT EXISTS delivery

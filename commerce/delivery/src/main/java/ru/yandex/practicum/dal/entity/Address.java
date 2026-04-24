@@ -12,7 +12,12 @@ import java.util.UUID;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "address")
+@Table(
+        name = "address",
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"country", "city", "street", "house", "flat"}
+        )
+)
 public class Address {
 
     @Id

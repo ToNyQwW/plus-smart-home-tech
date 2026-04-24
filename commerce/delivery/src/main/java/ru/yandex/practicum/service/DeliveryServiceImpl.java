@@ -1,0 +1,65 @@
+package ru.yandex.practicum.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.dal.entity.Address;
+import ru.yandex.practicum.dal.entity.Delivery;
+import ru.yandex.practicum.dal.repository.AddressRepository;
+import ru.yandex.practicum.dal.repository.DeliveryRepository;
+import ru.yandex.practicum.dto.commerce.AddressRequest;
+import ru.yandex.practicum.dto.commerce.delivery.CreateNewDeliveryRequest;
+import ru.yandex.practicum.dto.commerce.delivery.DeliveryDto;
+import ru.yandex.practicum.exception.delivery.DeliveryAlreadyExistsException;
+import ru.yandex.practicum.mapper.AddressMapper;
+import ru.yandex.practicum.mapper.DeliveryMapper;
+
+import java.util.Optional;
+import java.util.UUID;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class DeliveryServiceImpl implements DeliveryService {
+
+    private final AddressMapper addressMapper;
+    private final DeliveryMapper deliveryMapper;
+    private final AddressRepository addressRepository;
+    private final DeliveryRepository deliveryRepository;
+
+    @Override
+    public DeliveryDto createNewDelivery(CreateNewDeliveryRequest request) {
+        throwIfDeliveryWithOrderIdExists(request.getOrderId());
+
+        Address toAddress = getOrCreateNewAddress(request.getToAddress());
+        Address fromAddress = getOrCreateNewAddress(request.getFromAddress());
+        Delivery delivery = deliveryMapper.toDelivery(request, fromAddress, toAddress);
+
+        Delivery savedDelivery = deliveryRepository.save(delivery);
+
+        return deliveryMapper.toDeliveryDto(savedDelivery);
+    }
+
+    private Address getOrCreateNewAddress(AddressRequest request) {
+        Optional<Address> addressOpt = addressRepository.findByCountryAndCityAndStreetAndHouseAndFlat(
+                request.getCountry(),
+                request.getCity(),
+                request.getStreet(),
+                request.getHouse(),
+                request.getFlat()
+        );
+
+        if (addressOpt.isEmpty()) {
+            Address address = addressMapper.toAddress(request);
+            return addressRepository.save(address);
+        }
+
+        return addressOpt.get();
+    }
+
+    private void throwIfDeliveryWithOrderIdExists(UUID orderId) {
+        if (deliveryRepository.existsByOrderId(orderId)) {
+            throw new DeliveryAlreadyExistsException("Доставка с id заказа " + orderId + " уже существует");
+        }
+    }
+}

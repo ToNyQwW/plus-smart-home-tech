@@ -9,7 +9,7 @@ import ru.yandex.practicum.dal.entity.Product;
 import ru.yandex.practicum.dal.repository.ProductRepository;
 import ru.yandex.practicum.dto.commerce.cart.ShoppingCartDto;
 import ru.yandex.practicum.dto.commerce.warehouse.AddProductToWarehouseRequest;
-import ru.yandex.practicum.dto.commerce.warehouse.AddressDto;
+import ru.yandex.practicum.dto.commerce.AddressDto;
 import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
 import ru.yandex.practicum.dto.commerce.warehouse.NewProductInWarehouseRequest;
 import ru.yandex.practicum.exception.ProductNotFoundException;

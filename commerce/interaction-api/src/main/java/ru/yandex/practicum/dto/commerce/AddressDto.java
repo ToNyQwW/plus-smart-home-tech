@@ -1,4 +1,4 @@
-package ru.yandex.practicum.dto.commerce.warehouse;
+package ru.yandex.practicum.dto.commerce;
 
 import lombok.Builder;
 import lombok.Value;

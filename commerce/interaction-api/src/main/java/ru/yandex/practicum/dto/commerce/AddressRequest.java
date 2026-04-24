@@ -20,5 +20,6 @@ public class AddressRequest {
     @NotBlank
     String house;
 
+    @NotBlank
     String flat;
 }
