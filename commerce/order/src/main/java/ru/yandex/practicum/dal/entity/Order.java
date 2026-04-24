@@ -36,6 +36,10 @@ public class Order {
     @Column(name = "quantity")
     private Map<UUID, Long> products = new HashMap<>();
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private OrderState state =  OrderState.NEW;
+
     @Column(name = "shopping_cart_id")
     private UUID shoppingCartId;
 
@@ -61,10 +65,6 @@ public class Order {
     private BigDecimal totalPrice;
 
     private String username;
-
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    private OrderState state =  OrderState.NEW;
 
     private boolean fragile;
 }
