@@ -3,8 +3,8 @@ package ru.yandex.practicum.client;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.dto.cart.ShoppingCartDto;
-import ru.yandex.practicum.dto.warehouse.BookedProductsDto;
+import ru.yandex.practicum.dto.commerce.cart.ShoppingCartDto;
+import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
 import ru.yandex.practicum.exception.warehouse.WarehouseServiceUnavailableException;
 import ru.yandex.practicum.util.ErrorMessagesConstants;
 

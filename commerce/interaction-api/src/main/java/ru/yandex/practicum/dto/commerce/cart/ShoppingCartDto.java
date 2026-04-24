@@ -1,4 +1,4 @@
-package ru.yandex.practicum.dto.cart;
+package ru.yandex.practicum.dto.commerce.cart;
 
 import lombok.Builder;
 import lombok.Value;

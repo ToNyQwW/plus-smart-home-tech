@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.dal.repository.AddressRepository;
 import ru.yandex.practicum.dal.repository.OrderRepository;
-import ru.yandex.practicum.dto.order.CreateNewOrderRequest;
-import ru.yandex.practicum.dto.order.OrderDto;
+import ru.yandex.practicum.dto.commerce.order.CreateNewOrderRequest;
+import ru.yandex.practicum.dto.commerce.order.OrderDto;
 import ru.yandex.practicum.mapper.AddressMapper;
 
 @Service

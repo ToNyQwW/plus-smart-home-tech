@@ -1,4 +1,4 @@
-package ru.yandex.practicum.dto.order;
+package ru.yandex.practicum.dto.commerce.order;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

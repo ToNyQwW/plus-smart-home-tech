@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.dto.order.CreateNewOrderRequest;
-import ru.yandex.practicum.dto.order.OrderDto;
+import ru.yandex.practicum.dto.commerce.order.CreateNewOrderRequest;
+import ru.yandex.practicum.dto.commerce.order.OrderDto;
 import ru.yandex.practicum.service.OrderService;
 
 @RestController

@@ -83,3 +83,13 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - "5436:5432"
+
+  delivery-db:
+    image: postgres:16.1
+    container_name: delivery-db
+    environment:
+      POSTGRES_DB: delivery
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5437:5432"

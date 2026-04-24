@@ -1,5 +1,6 @@
-package ru.yandex.practicum.dto.cart;
+package ru.yandex.practicum.dto.commerce.warehouse;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -9,11 +10,17 @@ import java.util.UUID;
 
 @Value
 @Builder
-public class ChangeProductQuantityRequest {
+public class NewProductInWarehouseRequest {
 
     @NotNull
     UUID productId;
 
+    boolean fragile;
+
+    @Valid
+    @NotNull
+    DimensionDto dimension;
+
     @Min(1)
-    long newQuantity;
+    double weight;
 }
