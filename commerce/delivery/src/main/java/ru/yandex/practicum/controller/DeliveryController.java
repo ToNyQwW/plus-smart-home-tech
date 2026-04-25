@@ -1,7 +1,9 @@
 package ru.yandex.practicum.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.dto.commerce.OrderRequest;
 import ru.yandex.practicum.dto.commerce.delivery.CreateNewDeliveryRequest;
 import ru.yandex.practicum.dto.commerce.delivery.DeliveryDto;
 import ru.yandex.practicum.service.DeliveryService;
@@ -33,5 +35,10 @@ public class DeliveryController {
     @PostMapping("/failed")
     public DeliveryDto failedDelivery(@RequestBody UUID orderId) {
         return deliveryService.failDelivery(orderId);
+    }
+
+    @PostMapping("/cost")
+    public double deliveryCost(@RequestBody @Valid OrderRequest request) {
+        return deliveryService.calculateDeliveryCost(request);
     }
 }

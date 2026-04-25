@@ -7,15 +7,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dal.entity.Product;
 import ru.yandex.practicum.dal.repository.ProductRepository;
+import ru.yandex.practicum.dto.commerce.AddressDto;
 import ru.yandex.practicum.dto.commerce.cart.ShoppingCartDto;
 import ru.yandex.practicum.dto.commerce.warehouse.AddProductToWarehouseRequest;
-import ru.yandex.practicum.dto.commerce.AddressDto;
 import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
 import ru.yandex.practicum.dto.commerce.warehouse.NewProductInWarehouseRequest;
 import ru.yandex.practicum.exception.ProductNotFoundException;
 import ru.yandex.practicum.exception.warehouse.LowQuantityException;
 import ru.yandex.practicum.exception.warehouse.ProductAlreadyExistsException;
 import ru.yandex.practicum.mapper.ProductMapper;
+import ru.yandex.practicum.model.WarehouseAddress;
 
 import java.security.SecureRandom;
 import java.util.*;
@@ -30,7 +31,10 @@ import static java.util.stream.Collectors.toSet;
 @RequiredArgsConstructor
 public class WarehouseServiceImpl implements WarehouseService {
 
-    private static final String[] ADDRESSES = new String[]{"ADDRESS_1", "ADDRESS_2"};
+    private static final String[] ADDRESSES = new String[]{
+            WarehouseAddress.ADDRESS_1.toString(),
+            WarehouseAddress.ADDRESS_2.toString()
+    };
 
     private static final String CURRENT_ADDRESS =
             ADDRESSES[Random.from(new SecureRandom()).nextInt(0, ADDRESSES.length)];
