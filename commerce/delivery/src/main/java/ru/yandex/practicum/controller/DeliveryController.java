@@ -24,4 +24,9 @@ public class DeliveryController {
     public DeliveryDto successfulDelivery(@RequestBody UUID orderId) {
         return deliveryService.completeDelivery(orderId);
     }
+
+    @PostMapping("/picked")
+    public DeliveryDto pickedDelivery(@RequestBody UUID orderId) {
+        return deliveryService.startDelivery(orderId);
+    }
 }

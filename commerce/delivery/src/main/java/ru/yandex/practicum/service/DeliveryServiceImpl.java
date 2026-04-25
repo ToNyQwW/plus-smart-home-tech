@@ -13,6 +13,7 @@ import ru.yandex.practicum.dto.commerce.delivery.CreateNewDeliveryRequest;
 import ru.yandex.practicum.dto.commerce.delivery.DeliveryDto;
 import ru.yandex.practicum.exception.delivery.DeliveryAlreadyExistsException;
 import ru.yandex.practicum.exception.delivery.DeliveryNotFoundException;
+import ru.yandex.practicum.exception.delivery.InvalidDeliveryStateException;
 import ru.yandex.practicum.mapper.AddressMapper;
 import ru.yandex.practicum.mapper.DeliveryMapper;
 import ru.yandex.practicum.model.DeliveryState;
@@ -49,9 +50,21 @@ public class DeliveryServiceImpl implements DeliveryService {
     public DeliveryDto completeDelivery(UUID orderId) {
         Delivery delivery = getDeliveryOrThrowException(orderId);
 
-        if (delivery.getDeliveryState() != DeliveryState.DELIVERED) {
-            delivery.setDeliveryState(DeliveryState.DELIVERED);
-        }
+        assertDeliveryState(delivery, DeliveryState.IN_PROGRESS);
+
+        delivery.setDeliveryState(DeliveryState.DELIVERED);
+
+        return deliveryMapper.toDeliveryDto(delivery);
+    }
+
+    @Override
+    @Loggable
+    public DeliveryDto startDelivery(UUID orderId) {
+        Delivery delivery = getDeliveryOrThrowException(orderId);
+
+        assertDeliveryState(delivery, DeliveryState.CREATED);
+
+        delivery.setDeliveryState(DeliveryState.IN_PROGRESS);
 
         return deliveryMapper.toDeliveryDto(delivery);
     }
@@ -71,6 +84,13 @@ public class DeliveryServiceImpl implements DeliveryService {
         }
 
         return addressOpt.get();
+    }
+
+    private static void assertDeliveryState(Delivery delivery, DeliveryState expectedState) {
+        DeliveryState actualState = delivery.getDeliveryState();
+        if (actualState != expectedState) {
+            throw new InvalidDeliveryStateException(delivery.getOrderId(), actualState, expectedState);
+        }
     }
 
     private Delivery getDeliveryOrThrowException(UUID orderId) {

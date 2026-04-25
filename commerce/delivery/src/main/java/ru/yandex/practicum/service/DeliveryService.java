@@ -10,4 +10,6 @@ public interface DeliveryService {
     DeliveryDto createNewDelivery(CreateNewDeliveryRequest request);
 
     DeliveryDto completeDelivery(UUID orderId);
+
+    DeliveryDto startDelivery(UUID orderId);
 }

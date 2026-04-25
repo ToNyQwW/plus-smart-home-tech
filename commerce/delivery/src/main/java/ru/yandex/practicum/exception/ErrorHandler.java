@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.exception.delivery.DeliveryAlreadyExistsException;
 import ru.yandex.practicum.exception.delivery.DeliveryNotFoundException;
+import ru.yandex.practicum.exception.delivery.InvalidDeliveryStateException;
 import ru.yandex.practicum.util.ErrorMessagesConstants;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -42,6 +43,22 @@ public class ErrorHandler {
                 .httpStatus(NOT_FOUND)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.DELIVERY_NOT_FOUND)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(InvalidDeliveryStateException.class)
+    public ErrorResponse handleInvalidDeliveryStateException(InvalidDeliveryStateException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception InvalidDeliveryStateException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(BAD_REQUEST)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.INVALID_DELIVERY_STATE)
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();
