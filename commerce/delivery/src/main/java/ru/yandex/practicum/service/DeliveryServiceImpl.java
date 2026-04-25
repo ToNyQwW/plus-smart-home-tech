@@ -3,6 +3,7 @@ package ru.yandex.practicum.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.aop.Loggable;
 import ru.yandex.practicum.dal.entity.Address;
 import ru.yandex.practicum.dal.entity.Delivery;
 import ru.yandex.practicum.dal.repository.AddressRepository;
@@ -28,6 +29,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryRepository deliveryRepository;
 
     @Override
+    @Loggable
     public DeliveryDto createNewDelivery(CreateNewDeliveryRequest request) {
         throwIfDeliveryWithOrderIdExists(request.getOrderId());
 
