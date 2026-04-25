@@ -29,4 +29,9 @@ public class DeliveryController {
     public DeliveryDto pickedDelivery(@RequestBody UUID orderId) {
         return deliveryService.startDelivery(orderId);
     }
+
+    @PostMapping("/failed")
+    public DeliveryDto failedDelivery(@RequestBody UUID orderId) {
+        return deliveryService.failDelivery(orderId);
+    }
 }

@@ -69,6 +69,18 @@ public class DeliveryServiceImpl implements DeliveryService {
         return deliveryMapper.toDeliveryDto(delivery);
     }
 
+    @Override
+    @Loggable
+    public DeliveryDto failDelivery(UUID orderId) {
+        Delivery delivery = getDeliveryOrThrowException(orderId);
+
+        if (delivery.getDeliveryState() != DeliveryState.FAILED) {
+            delivery.setDeliveryState(DeliveryState.FAILED);
+        }
+
+        return deliveryMapper.toDeliveryDto(delivery);
+    }
+
     private Address getOrCreateNewAddress(AddressRequest request) {
         Optional<Address> addressOpt = addressRepository.findByCountryAndCityAndStreetAndHouseAndFlat(
                 request.getCountry(),

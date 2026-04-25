@@ -12,4 +12,6 @@ public interface DeliveryService {
     DeliveryDto completeDelivery(UUID orderId);
 
     DeliveryDto startDelivery(UUID orderId);
+
+    DeliveryDto failDelivery(UUID orderId);
 }
