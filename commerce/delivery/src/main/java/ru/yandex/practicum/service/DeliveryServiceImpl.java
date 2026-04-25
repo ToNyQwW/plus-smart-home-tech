@@ -12,8 +12,10 @@ import ru.yandex.practicum.dto.commerce.AddressRequest;
 import ru.yandex.practicum.dto.commerce.delivery.CreateNewDeliveryRequest;
 import ru.yandex.practicum.dto.commerce.delivery.DeliveryDto;
 import ru.yandex.practicum.exception.delivery.DeliveryAlreadyExistsException;
+import ru.yandex.practicum.exception.delivery.DeliveryNotFoundException;
 import ru.yandex.practicum.mapper.AddressMapper;
 import ru.yandex.practicum.mapper.DeliveryMapper;
+import ru.yandex.practicum.model.DeliveryState;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -42,6 +44,18 @@ public class DeliveryServiceImpl implements DeliveryService {
         return deliveryMapper.toDeliveryDto(savedDelivery);
     }
 
+    @Override
+    @Loggable
+    public DeliveryDto completeDelivery(UUID orderId) {
+        Delivery delivery = getDeliveryOrThrowException(orderId);
+
+        if (delivery.getDeliveryState() != DeliveryState.DELIVERED) {
+            delivery.setDeliveryState(DeliveryState.DELIVERED);
+        }
+
+        return deliveryMapper.toDeliveryDto(delivery);
+    }
+
     private Address getOrCreateNewAddress(AddressRequest request) {
         Optional<Address> addressOpt = addressRepository.findByCountryAndCityAndStreetAndHouseAndFlat(
                 request.getCountry(),
@@ -57,6 +71,11 @@ public class DeliveryServiceImpl implements DeliveryService {
         }
 
         return addressOpt.get();
+    }
+
+    private Delivery getDeliveryOrThrowException(UUID orderId) {
+        return deliveryRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new DeliveryNotFoundException("Доставка с id заказа: " + orderId + " не найдена"));
     }
 
     private void throwIfDeliveryWithOrderIdExists(UUID orderId) {

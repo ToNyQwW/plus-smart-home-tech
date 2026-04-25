@@ -1,13 +1,12 @@
 package ru.yandex.practicum.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.commerce.delivery.CreateNewDeliveryRequest;
 import ru.yandex.practicum.dto.commerce.delivery.DeliveryDto;
 import ru.yandex.practicum.service.DeliveryService;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,5 +18,10 @@ public class DeliveryController {
     @PutMapping
     public DeliveryDto createNewDelivery(@RequestBody CreateNewDeliveryRequest request) {
         return deliveryService.createNewDelivery(request);
+    }
+
+    @PostMapping("/successful")
+    public DeliveryDto successfulDelivery(@RequestBody UUID orderId) {
+        return deliveryService.completeDelivery(orderId);
     }
 }

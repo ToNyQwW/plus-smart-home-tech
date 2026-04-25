@@ -9,6 +9,8 @@ public class ErrorMessagesConstants {
 
     public static final String PRODUCT_NOT_FOUND = "Product not found";
 
+    public static final String DELIVERY_NOT_FOUND = "Delivery not found";
+
     public static final String PRODUCT_ALREADY_EXISTS = "Product already exists";
 
     public static final String DELIVERY_ALREADY_EXISTS = "Delivery already exists";
