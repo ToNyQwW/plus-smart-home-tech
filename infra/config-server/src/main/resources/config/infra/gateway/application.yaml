@@ -29,7 +29,7 @@ spring:
           uri: lb://warehouse
           predicates:
             - Path=/warehouse/**
-            -
+
         - id: order_service_route
           uri: lb://order
           predicates:

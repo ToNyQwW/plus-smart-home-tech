@@ -15,6 +15,8 @@ public class ErrorMessagesConstants {
 
     public static final String PRODUCT_ALREADY_EXISTS = "Product already exists";
 
+    public static final String PAYMENT_ALREADY_EXISTS = "Payment already exists";
+
     public static final String DELIVERY_ALREADY_EXISTS = "Delivery already exists";
 
     public static final String SHOPPING_CART_NOT_FOUND = "Shopping cart not found";

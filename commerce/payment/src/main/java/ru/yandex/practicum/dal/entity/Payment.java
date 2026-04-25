@@ -24,9 +24,10 @@ public class Payment {
     @Column(name = "order_id")
     private UUID orderId;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_state")
-    private PaymentState paymentState;
+    private PaymentState paymentState = PaymentState.PENDING;
 
     @Column(name = "total_payment")
     private BigDecimal totalPayment;
