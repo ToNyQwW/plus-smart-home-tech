@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS address
     city       VARCHAR(50) NOT NULL,
     street     VARCHAR(50) NOT NULL,
     house      VARCHAR(15) NOT NULL,
-    flat       VARCHAR(10)
+    flat       VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS orders
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS orders
     order_id            UUID           DEFAULT gen_random_uuid() PRIMARY KEY,
     delivery_address_id UUID           NOT NULL REFERENCES address (address_id),
     shopping_cart_id    UUID           NOT NULL,
-    payment_id          UUID           NOT NULL UNIQUE,
+    payment_id          UUID           UNIQUE,
     delivery_id         UUID           NOT NULL UNIQUE,
     username            VARCHAR(255)   NOT NULL,
     state               VARCHAR(20)    NOT NULL,

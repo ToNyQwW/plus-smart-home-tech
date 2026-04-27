@@ -53,7 +53,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         shoppingCartDto.getProducts().putAll(products);
 
         try {
-            log.info("Запрос к сервису Warehouse через CircuitBreaker для проверки доступности товаров");
+            log.info("Запрос к сервису Warehouse через Feign client для проверки доступности товаров");
             warehouseClient.checkProductQuantityState(shoppingCartDto);
             shoppingCart.addProducts(products);
             log.info("товары успешно добавлены в корзину. shoppingCart: {}", shoppingCart);
