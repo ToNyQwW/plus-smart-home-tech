@@ -9,7 +9,7 @@ import ru.yandex.practicum.dal.entity.Delivery;
 import ru.yandex.practicum.dal.repository.AddressRepository;
 import ru.yandex.practicum.dal.repository.DeliveryRepository;
 import ru.yandex.practicum.dto.commerce.AddressRequest;
-import ru.yandex.practicum.dto.commerce.OrderRequest;
+import ru.yandex.practicum.dto.commerce.delivery.CalculateDeliveryCostRequest;
 import ru.yandex.practicum.dto.commerce.delivery.CreateNewDeliveryRequest;
 import ru.yandex.practicum.dto.commerce.delivery.DeliveryDto;
 import ru.yandex.practicum.exception.delivery.DeliveryAlreadyExistsException;
@@ -86,7 +86,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Loggable
-    public double calculateDeliveryCost(OrderRequest request) {
+    public double calculateDeliveryCost(CalculateDeliveryCostRequest request) {
         Delivery delivery = getDeliveryOrThrowException(request.getOrderId());
 
         return deliveryCostCalculator.calculateDeliveryCost(

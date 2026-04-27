@@ -3,7 +3,7 @@ package ru.yandex.practicum.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.dto.commerce.OrderRequest;
+import ru.yandex.practicum.dto.commerce.delivery.CalculateDeliveryCostRequest;
 import ru.yandex.practicum.dto.commerce.delivery.CreateNewDeliveryRequest;
 import ru.yandex.practicum.dto.commerce.delivery.DeliveryDto;
 import ru.yandex.practicum.service.DeliveryService;
@@ -38,7 +38,7 @@ public class DeliveryController {
     }
 
     @PostMapping("/cost")
-    public double deliveryCost(@RequestBody @Valid OrderRequest request) {
+    public double deliveryCost(@RequestBody @Valid CalculateDeliveryCostRequest request) {
         return deliveryService.calculateDeliveryCost(request);
     }
 }

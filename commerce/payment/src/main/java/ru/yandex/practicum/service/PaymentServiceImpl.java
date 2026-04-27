@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.aop.Loggable;
 import ru.yandex.practicum.dal.entity.Payment;
 import ru.yandex.practicum.dal.repository.PaymentRepository;
-import ru.yandex.practicum.dto.commerce.OrderRequest;
+import ru.yandex.practicum.dto.commerce.payment.CreatePaymentRequest;
 import ru.yandex.practicum.dto.commerce.payment.PaymentDto;
 import ru.yandex.practicum.exception.payment.PaymentAlreadyExistsException;
 import ru.yandex.practicum.mapper.PaymentMapper;
@@ -26,8 +26,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Loggable
-    public PaymentDto createPayment(OrderRequest request) {
-        throwIfPaymentExists(request.getPaymentId());
+    public PaymentDto createPayment(CreatePaymentRequest request) {
+        checkOrderAlreadyHasPayment(request.getOrderId());
+        checkPaymentIdAlreadyExists(request.getPaymentId());
 
         Payment payment = paymentMapper.toPayment(request);
 
@@ -44,9 +45,15 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentMapper.toPaymentDto(savedPayment);
     }
 
-    private void throwIfPaymentExists(UUID paymentId) {
+    private void checkOrderAlreadyHasPayment(UUID orderId) {
+        if (paymentRepository.existsByOrderId(orderId)) {
+            throw new PaymentAlreadyExistsException("Платеж для заказа " + orderId + " уже существует");
+        }
+    }
+
+    private void checkPaymentIdAlreadyExists(UUID paymentId) {
         if (paymentRepository.existsById(paymentId)) {
-            throw new PaymentAlreadyExistsException("Платеж с id  " + paymentId + " уже существует");
+            throw new PaymentAlreadyExistsException("Платеж с id " + paymentId + " уже существует");
         }
     }
 }
