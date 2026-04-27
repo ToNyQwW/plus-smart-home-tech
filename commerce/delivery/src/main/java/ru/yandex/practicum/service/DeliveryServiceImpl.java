@@ -20,6 +20,7 @@ import ru.yandex.practicum.mapper.DeliveryMapper;
 import ru.yandex.practicum.model.DeliveryState;
 import ru.yandex.practicum.pricing.DeliveryCostCalculator;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -86,7 +87,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Loggable
-    public double calculateDeliveryCost(CalculateDeliveryCostRequest request) {
+    public BigDecimal calculateDeliveryCost(CalculateDeliveryCostRequest request) {
         Delivery delivery = getDeliveryOrThrowException(request.getOrderId());
 
         return deliveryCostCalculator.calculateDeliveryCost(
@@ -95,7 +96,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 request.getDeliveryWeight(),
                 request.getDeliveryVolume(),
                 request.isFragile()
-        ).doubleValue();
+        );
     }
 
     private Address getOrCreateNewAddress(AddressRequest request) {

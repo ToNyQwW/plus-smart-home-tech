@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.aop.Loggable;
 import ru.yandex.practicum.dal.entity.Payment;
 import ru.yandex.practicum.dal.repository.PaymentRepository;
+import ru.yandex.practicum.dto.commerce.payment.CalculateTotalCostRequest;
 import ru.yandex.practicum.dto.commerce.payment.CreatePaymentRequest;
 import ru.yandex.practicum.dto.commerce.payment.PaymentDto;
 import ru.yandex.practicum.exception.payment.PaymentAlreadyExistsException;
@@ -15,7 +16,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
@@ -26,6 +26,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Loggable
+    @Transactional
     public PaymentDto createPayment(CreatePaymentRequest request) {
         checkOrderAlreadyHasPayment(request.getOrderId());
         checkPaymentIdAlreadyExists(request.getPaymentId());
@@ -43,6 +44,16 @@ public class PaymentServiceImpl implements PaymentService {
         Payment savedPayment = paymentRepository.save(payment);
 
         return paymentMapper.toPaymentDto(savedPayment);
+    }
+
+    @Override
+    @Loggable
+    public BigDecimal calculateTotalCost(CalculateTotalCostRequest request) {
+        BigDecimal productPrice = request.getProductPrice();
+
+        return productPrice
+                .add(productPrice.multiply(VAT_RATE))
+                .add(request.getDeliveryPrice());
     }
 
     private void checkOrderAlreadyHasPayment(UUID orderId) {

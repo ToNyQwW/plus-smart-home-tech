@@ -8,6 +8,7 @@ import ru.yandex.practicum.dto.commerce.delivery.CreateNewDeliveryRequest;
 import ru.yandex.practicum.dto.commerce.delivery.DeliveryDto;
 import ru.yandex.practicum.service.DeliveryService;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @RestController
@@ -18,7 +19,7 @@ public class DeliveryController {
     private final DeliveryService deliveryService;
 
     @PutMapping
-    public DeliveryDto createNewDelivery(@RequestBody CreateNewDeliveryRequest request) {
+    public DeliveryDto createNewDelivery(@RequestBody @Valid CreateNewDeliveryRequest request) {
         return deliveryService.createNewDelivery(request);
     }
 
@@ -38,7 +39,7 @@ public class DeliveryController {
     }
 
     @PostMapping("/cost")
-    public double deliveryCost(@RequestBody @Valid CalculateDeliveryCostRequest request) {
+    public BigDecimal deliveryCost(@RequestBody @Valid CalculateDeliveryCostRequest request) {
         return deliveryService.calculateDeliveryCost(request);
     }
 }

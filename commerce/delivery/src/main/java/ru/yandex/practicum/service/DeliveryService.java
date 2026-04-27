@@ -4,6 +4,7 @@ import ru.yandex.practicum.dto.commerce.delivery.CalculateDeliveryCostRequest;
 import ru.yandex.practicum.dto.commerce.delivery.CreateNewDeliveryRequest;
 import ru.yandex.practicum.dto.commerce.delivery.DeliveryDto;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public interface DeliveryService {
@@ -16,5 +17,5 @@ public interface DeliveryService {
 
     DeliveryDto failDelivery(UUID orderId);
 
-    double calculateDeliveryCost(CalculateDeliveryCostRequest request);
+    BigDecimal calculateDeliveryCost(CalculateDeliveryCostRequest request);
 }
