@@ -19,7 +19,4 @@ public class CreateNewOrderRequest {
     @Valid
     @NotNull
     AddressRequest deliveryAddress;
-
-    @NotBlank
-    String username;
 }

@@ -5,5 +5,5 @@ import ru.yandex.practicum.dto.commerce.order.OrderDto;
 
 public interface OrderService {
 
-    OrderDto createOrder(CreateNewOrderRequest request);
+    OrderDto createOrder(String username, CreateNewOrderRequest request);
 }

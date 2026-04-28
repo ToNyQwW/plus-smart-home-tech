@@ -3,9 +3,8 @@ package ru.yandex.practicum.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.yandex.practicum.dal.entity.Order;
-import ru.yandex.practicum.dto.commerce.order.CreateNewOrderRequest;
 import ru.yandex.practicum.dto.commerce.order.OrderDto;
-import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
+import ru.yandex.practicum.model.OrderCreationContext;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
@@ -14,11 +13,10 @@ public interface OrderMapper {
 
     OrderDto toOrderDto(Order order);
 
-    @Mapping(target = "username", source = "request.username")
     @Mapping(target = "products", source = "request.shoppingCart.products")
     @Mapping(target = "shoppingCartId", source = "request.shoppingCart.shoppingCartId")
-    @Mapping(target = "fragile", source = "dto.fragile")
-    @Mapping(target = "deliveryVolume", source = "dto.deliveryVolume")
-    @Mapping(target = "deliveryWeight", source = "dto.deliveryWeight")
-    Order toOrder(CreateNewOrderRequest request, BookedProductsDto dto);
+    @Mapping(target = "fragile", source = "warehouseInfo.fragile")
+    @Mapping(target = "deliveryVolume", source = "warehouseInfo.deliveryVolume")
+    @Mapping(target = "deliveryWeight", source = "warehouseInfo.deliveryWeight")
+    Order toOrder(OrderCreationContext context);
 }

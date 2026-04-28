@@ -15,6 +15,7 @@ import ru.yandex.practicum.dto.commerce.order.CreateNewOrderRequest;
 import ru.yandex.practicum.dto.commerce.order.OrderDto;
 import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
 import ru.yandex.practicum.mapper.AddressMapper;
+import ru.yandex.practicum.model.OrderCreationContext;
 import ru.yandex.practicum.mapper.OrderMapper;
 import ru.yandex.practicum.model.DeliveryState;
 
@@ -34,10 +35,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Loggable
     @Transactional
-    public OrderDto createOrder(CreateNewOrderRequest request) {
+    public OrderDto createOrder(String username, CreateNewOrderRequest request) {
         BookedProductsDto bookedProducts = warehouseClient.checkProductsForShoppingCart(request.getShoppingCart());
 
-        Order order = orderRepository.save(orderMapper.toOrder(request, bookedProducts));
+        OrderCreationContext orderCreationContext = OrderCreationContext.builder()
+                .request(request)
+                .warehouseInfo(bookedProducts)
+                .username(username)
+                .build();
+
+        Order order = orderRepository.save(orderMapper.toOrder(orderCreationContext));
 
         AddressDto warehouseAddress = warehouseClient.getAddress();
 
