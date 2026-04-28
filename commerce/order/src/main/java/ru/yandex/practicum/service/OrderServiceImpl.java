@@ -15,9 +15,11 @@ import ru.yandex.practicum.dto.commerce.order.CreateNewOrderRequest;
 import ru.yandex.practicum.dto.commerce.order.OrderDto;
 import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
 import ru.yandex.practicum.mapper.AddressMapper;
-import ru.yandex.practicum.model.OrderCreationContext;
 import ru.yandex.practicum.mapper.OrderMapper;
 import ru.yandex.practicum.model.DeliveryState;
+import ru.yandex.practicum.model.OrderCreationContext;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -61,5 +63,16 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         return orderMapper.toOrderDto(order);
+    }
+
+    @Override
+    @Loggable
+    @Transactional(readOnly = true)
+    public List<OrderDto> getUserOrders(String username) {
+        List<Order> orders = orderRepository.getOrdersByUsername(username);
+
+        return orders.stream()
+                .map(orderMapper::toOrderDto)
+                .toList();
     }
 }
