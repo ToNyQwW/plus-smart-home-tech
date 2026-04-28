@@ -7,7 +7,9 @@ import ru.yandex.practicum.dto.commerce.ShoppingCartRequest;
 import ru.yandex.practicum.dto.commerce.warehouse.AddProductToWarehouseRequest;
 import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
 import ru.yandex.practicum.dto.commerce.warehouse.NewProductInWarehouseRequest;
+import ru.yandex.practicum.exception.ProductNotFoundException;
 import ru.yandex.practicum.exception.warehouse.LowQuantityException;
+import ru.yandex.practicum.exception.warehouse.ProductAlreadyExistsException;
 import ru.yandex.practicum.exception.warehouse.WarehouseServiceUnavailableException;
 
 @Component
@@ -19,11 +21,17 @@ public class WarehouseFallbackFactory implements FallbackFactory<WarehouseClient
 
             @Override
             public void newProductInWarehouse(NewProductInWarehouseRequest request) {
+                if (cause instanceof ProductAlreadyExistsException) {
+                    throw (ProductAlreadyExistsException) cause;
+                }
                 throw new WarehouseServiceUnavailableException("Warehouse недоступен: " + cause.getMessage());
             }
 
             @Override
             public void addProductToWarehouse(AddProductToWarehouseRequest request) {
+                if (cause instanceof ProductNotFoundException) {
+                    throw (ProductNotFoundException) cause;
+                }
                 throw new WarehouseServiceUnavailableException("Warehouse недоступен: " + cause.getMessage());
             }
 
@@ -32,7 +40,9 @@ public class WarehouseFallbackFactory implements FallbackFactory<WarehouseClient
                 if (cause instanceof LowQuantityException) {
                     throw (LowQuantityException) cause;
                 }
-
+                if (cause instanceof ProductNotFoundException) {
+                    throw (ProductNotFoundException) cause;
+                }
                 throw new WarehouseServiceUnavailableException("Warehouse недоступен: " + cause.getMessage());
             }
 
@@ -40,7 +50,6 @@ public class WarehouseFallbackFactory implements FallbackFactory<WarehouseClient
             public AddressDto getAddress() {
                 throw new WarehouseServiceUnavailableException("Warehouse недоступен: " + cause.getMessage());
             }
-
         };
     }
 }
