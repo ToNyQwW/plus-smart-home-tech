@@ -1,12 +1,12 @@
-package ru.yandex.practicum.client.warehouse;
+package ru.yandex.practicum.client.delivery;
 
 import feign.codec.ErrorDecoder;
 import org.springframework.context.annotation.Bean;
 
-public class WarehouseFeignConfig {
+public class DeliveryFeignConfig {
 
     @Bean
     public ErrorDecoder errorDecoder() {
-        return new WarehouseFeignErrorDecoder();
+        return new DeliveryFeignErrorDecoder();
     }
 }

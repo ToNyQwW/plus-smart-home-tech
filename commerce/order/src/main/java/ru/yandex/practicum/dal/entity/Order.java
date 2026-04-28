@@ -23,11 +23,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID orderId;
 
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "delivery_address_id")
-    private Address address;
-
     @Builder.Default
     @ToString.Exclude
     @ElementCollection(fetch = FetchType.LAZY)

@@ -65,6 +65,22 @@ public class ErrorHandler {
                 .build();
     }
 
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ErrorResponse handleProductNotFoundException(ProductNotFoundException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception ProductNotFoundException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(NOT_FOUND)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.PRODUCT_NOT_FOUND)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(LowQuantityException.class)
     public ErrorResponse handleLowQuantityException(LowQuantityException e) {
