@@ -3,8 +3,8 @@ package ru.yandex.practicum.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.client.WarehouseClient;
-import ru.yandex.practicum.dto.commerce.cart.ShoppingCartDto;
+import ru.yandex.practicum.client.warehouse.WarehouseClient;
+import ru.yandex.practicum.dto.commerce.ShoppingCartRequest;
 import ru.yandex.practicum.dto.commerce.warehouse.AddProductToWarehouseRequest;
 import ru.yandex.practicum.dto.commerce.AddressDto;
 import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
@@ -29,7 +29,7 @@ public class WarehouseController implements WarehouseClient {
     }
 
     @PostMapping("/check")
-    public BookedProductsDto checkProductsForShoppingCart(@RequestBody @Valid ShoppingCartDto request) {
+    public BookedProductsDto checkProductsForShoppingCart(@RequestBody @Valid ShoppingCartRequest request) {
         return warehouseService.checkProductsForShoppingCart(request);
     }
 

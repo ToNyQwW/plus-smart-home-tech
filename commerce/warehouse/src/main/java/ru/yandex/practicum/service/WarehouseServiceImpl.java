@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dal.entity.Product;
 import ru.yandex.practicum.dal.repository.ProductRepository;
 import ru.yandex.practicum.dto.commerce.AddressDto;
-import ru.yandex.practicum.dto.commerce.cart.ShoppingCartDto;
+import ru.yandex.practicum.dto.commerce.ShoppingCartRequest;
 import ru.yandex.practicum.dto.commerce.warehouse.AddProductToWarehouseRequest;
 import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
 import ru.yandex.practicum.dto.commerce.warehouse.NewProductInWarehouseRequest;
@@ -65,7 +65,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Override
     @Transactional(readOnly = true)
-    public BookedProductsDto checkProductsForShoppingCart(ShoppingCartDto request) {
+    public BookedProductsDto checkProductsForShoppingCart(ShoppingCartRequest request) {
         log.info("Метод checkProductsForShoppingCart. request: {}", request);
         boolean fragile = false;
         double deliveryVolume = 0;

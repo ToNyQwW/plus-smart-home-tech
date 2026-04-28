@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Value;
 import ru.yandex.practicum.dto.commerce.AddressRequest;
+import ru.yandex.practicum.dto.commerce.ShoppingCartRequest;
 
 @Value
 @Builder

@@ -1,20 +1,18 @@
 package ru.yandex.practicum.service;
 
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.client.WarehouseClientFallback;
+import ru.yandex.practicum.client.warehouse.WarehouseClient;
 import ru.yandex.practicum.dal.entity.ShoppingCart;
 import ru.yandex.practicum.dal.repository.ShoppingCartRepository;
+import ru.yandex.practicum.dto.commerce.ShoppingCartRequest;
 import ru.yandex.practicum.dto.commerce.cart.ChangeProductQuantityRequest;
 import ru.yandex.practicum.dto.commerce.cart.ShoppingCartDto;
 import ru.yandex.practicum.exception.cart.NoProductsInShoppingCartException;
 import ru.yandex.practicum.exception.cart.NotAuthorizedUserException;
 import ru.yandex.practicum.exception.cart.ShoppingCartNotFoundException;
-import ru.yandex.practicum.exception.warehouse.LowQuantityException;
-import ru.yandex.practicum.exception.warehouse.WarehouseServiceUnavailableException;
 import ru.yandex.practicum.mapper.ShoppingCartMapper;
 
 import java.util.*;
@@ -30,7 +28,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 
     private final ShoppingCartMapper shoppingCartMapper;
-    private final WarehouseClientFallback warehouseClient;
+    private final WarehouseClient warehouseClient;
     private final ShoppingCartRepository shoppingCartRepository;
 
     @Override
@@ -49,22 +47,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         ShoppingCart shoppingCart = getOrCreateShoppingCart(username);
 
-        ShoppingCartDto shoppingCartDto = shoppingCartMapper.toShoppingCartDto(shoppingCart);
-        shoppingCartDto.getProducts().putAll(products);
+        ShoppingCartRequest shoppingCartRequest = shoppingCartMapper.toShoppingCartRequest(shoppingCart);
+        shoppingCartRequest.getProducts().putAll(products);
 
-        try {
-            log.info("Запрос к сервису Warehouse через Feign client для проверки доступности товаров");
-            warehouseClient.checkProductQuantityState(shoppingCartDto);
-            shoppingCart.addProducts(products);
-            log.info("товары успешно добавлены в корзину. shoppingCart: {}", shoppingCart);
+        log.info("Запрос к сервису Warehouse через Feign client для проверки доступности товаров");
+        warehouseClient.checkProductsForShoppingCart(shoppingCartRequest);
+        shoppingCart.addProducts(products);
+        log.info("товары успешно добавлены в корзину. shoppingCart: {}", shoppingCart);
 
-            return shoppingCartDto;
-
-        } catch (WarehouseServiceUnavailableException e) {
-            throw e;
-        } catch (FeignException e) {
-            throw new LowQuantityException("Недостаточно товаров на складе");
-        }
+        return shoppingCartMapper.toshoppingCartDto(shoppingCartRequest);
     }
 
     @Override
