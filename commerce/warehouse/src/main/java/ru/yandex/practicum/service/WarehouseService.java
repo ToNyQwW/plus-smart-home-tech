@@ -4,6 +4,9 @@ import ru.yandex.practicum.dto.commerce.AddressDto;
 import ru.yandex.practicum.dto.commerce.ShoppingCartRequest;
 import ru.yandex.practicum.dto.commerce.warehouse.*;
 
+import java.util.Map;
+import java.util.UUID;
+
 public interface WarehouseService {
 
     void createNewProductInWarehouse(NewProductInWarehouseRequest request);
@@ -15,6 +18,8 @@ public interface WarehouseService {
     BookedProductsDto assembleProductsForOrder(AssemblyProductsForOrderRequest request);
 
     void shippedToDelivery(ShippedToDeliveryRequest request);
+
+    void returnProducts(Map<UUID, Long> requestProducts);
 
     AddressDto getAddress();
 }

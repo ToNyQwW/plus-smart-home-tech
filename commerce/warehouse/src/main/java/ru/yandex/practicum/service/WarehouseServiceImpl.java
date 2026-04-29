@@ -94,7 +94,22 @@ public class WarehouseServiceImpl implements WarehouseService {
     public void shippedToDelivery(ShippedToDeliveryRequest request) {
         Order order = getOrderOrElseThrow(request.getOrderId());
 
-        order.setDeliveryId(request.getDeliveryId());
+        UUID deliveryId = request.getDeliveryId();
+        order.setDeliveryId(deliveryId);
+
+        log.info("Товары переданы в доставку с id: {}", deliveryId);
+    }
+
+    @Override
+    @Loggable
+    @Transactional
+    public void returnProducts(Map<UUID, Long> requestProducts) {
+        List<Product> products = getProductsOrElseThrow(requestProducts.keySet());
+
+        for (Product product : products) {
+            product.setQuantity(product.getQuantity() + requestProducts.get(product.getProductId()));
+        }
+        log.info("Товары успешно возвращены на склад");
     }
 
     @Override
