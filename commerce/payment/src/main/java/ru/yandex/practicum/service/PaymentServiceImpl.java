@@ -29,7 +29,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentDto createPayment(CreatePaymentRequest request) {
         checkOrderAlreadyHasPayment(request.getOrderId());
-        checkPaymentIdAlreadyExists(request.getPaymentId());
 
         Payment payment = paymentMapper.toPayment(request);
 
@@ -59,12 +58,6 @@ public class PaymentServiceImpl implements PaymentService {
     private void checkOrderAlreadyHasPayment(UUID orderId) {
         if (paymentRepository.existsByOrderId(orderId)) {
             throw new PaymentAlreadyExistsException("Платеж для заказа " + orderId + " уже существует");
-        }
-    }
-
-    private void checkPaymentIdAlreadyExists(UUID paymentId) {
-        if (paymentRepository.existsById(paymentId)) {
-            throw new PaymentAlreadyExistsException("Платеж с id " + paymentId + " уже существует");
         }
     }
 }

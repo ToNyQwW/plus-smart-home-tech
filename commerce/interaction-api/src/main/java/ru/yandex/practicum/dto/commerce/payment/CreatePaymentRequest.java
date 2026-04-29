@@ -15,12 +15,6 @@ public class CreatePaymentRequest {
     @NotNull
     UUID orderId;
 
-    @NotNull
-    UUID paymentId;
-
-    @Positive
-    BigDecimal totalPrice;
-
     @Positive
     BigDecimal deliveryPrice;
 
