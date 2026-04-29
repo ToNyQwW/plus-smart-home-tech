@@ -13,13 +13,21 @@ import ru.yandex.practicum.dto.commerce.delivery.CreateNewDeliveryRequest;
 import ru.yandex.practicum.dto.commerce.delivery.DeliveryDto;
 import ru.yandex.practicum.dto.commerce.order.CreateNewOrderRequest;
 import ru.yandex.practicum.dto.commerce.order.OrderDto;
+import ru.yandex.practicum.dto.commerce.order.ProductReturnRequest;
 import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
+import ru.yandex.practicum.exception.OrderNotFoundException;
+import ru.yandex.practicum.exception.order.InvalidOrderStateException;
 import ru.yandex.practicum.mapper.AddressMapper;
 import ru.yandex.practicum.mapper.OrderMapper;
 import ru.yandex.practicum.model.DeliveryState;
 import ru.yandex.practicum.model.OrderCreationContext;
+import ru.yandex.practicum.model.OrderState;
 
 import java.util.List;
+import java.util.UUID;
+
+import static ru.yandex.practicum.model.OrderState.CANCELED;
+import static ru.yandex.practicum.model.OrderState.PRODUCT_RETURNED;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +75,22 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Loggable
+    @Transactional
+    public OrderDto returnOrder(ProductReturnRequest request) {
+        UUID orderId = request.getOrderId();
+        Order order = getOrderOrElseThrow(orderId);
+
+        assertOrderState(orderId, order.getState());
+
+        warehouseClient.returnProducts(request.getProducts());
+
+        order.setState(PRODUCT_RETURNED);
+
+        return orderMapper.toOrderDto(order);
+    }
+
+    @Override
+    @Loggable
     @Transactional(readOnly = true)
     public List<OrderDto> getUserOrders(String username) {
         List<Order> orders = orderRepository.getOrdersByUsername(username);
@@ -74,5 +98,16 @@ public class OrderServiceImpl implements OrderService {
         return orders.stream()
                 .map(orderMapper::toOrderDto)
                 .toList();
+    }
+
+    private void assertOrderState(UUID orderId, OrderState state) {
+        if (state == CANCELED || state == PRODUCT_RETURNED) {
+            throw new InvalidOrderStateException(orderId, state);
+        }
+    }
+
+    private Order getOrderOrElseThrow(UUID orderId) {
+        return orderRepository.findById(orderId).orElseThrow(() ->
+                new OrderNotFoundException("Заказ с id: " + orderId + " не найден"));
     }
 }

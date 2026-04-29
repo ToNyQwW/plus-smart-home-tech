@@ -13,6 +13,8 @@ public class ErrorMessagesConstants {
 
     public static final String DELIVERY_NOT_FOUND = "Delivery not found";
 
+    public static final String INVALID_ORDER_STATE = "Invalid order state";
+
     public static final String INVALID_DELIVERY_STATE = "Invalid delivery state";
 
     public static final String PRODUCT_ALREADY_EXISTS = "Product already exists";

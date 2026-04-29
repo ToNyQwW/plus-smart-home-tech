@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.commerce.order.CreateNewOrderRequest;
 import ru.yandex.practicum.dto.commerce.order.OrderDto;
+import ru.yandex.practicum.dto.commerce.order.ProductReturnRequest;
 import ru.yandex.practicum.service.OrderService;
 
 import java.util.List;
@@ -23,6 +24,11 @@ public class OrderController {
     public OrderDto createOrder(@RequestParam @NotBlank String username,
                                 @RequestBody @Valid CreateNewOrderRequest request) {
         return orderService.createOrder(username, request);
+    }
+
+    @PostMapping("/return")
+    public OrderDto returnOrder(@RequestBody @Valid ProductReturnRequest request) {
+        return orderService.returnOrder(request);
     }
 
     //TODO: добавить пагинацию
