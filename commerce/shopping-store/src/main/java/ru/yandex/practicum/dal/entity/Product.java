@@ -44,6 +44,7 @@ public class Product {
     @Column(name = "product_category")
     private ProductCategory productCategory;
 
+    //TODO: поменять на BigDecimal
     @Column(name = "price")
     private Double price;
 }

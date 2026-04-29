@@ -8,6 +8,8 @@ import ru.yandex.practicum.dto.commerce.store.SetProductQuantityStateRequest;
 import ru.yandex.practicum.dto.commerce.store.UpdateProductDto;
 import ru.yandex.practicum.model.ProductCategory;
 
+import java.math.BigDecimal;
+import java.util.Set;
 import java.util.UUID;
 
 public interface ShoppingStoreService {
@@ -17,6 +19,8 @@ public interface ShoppingStoreService {
     ProductDto getProductById(UUID productId);
 
     Page<ProductDto> getProductsByCategory(ProductCategory category, Pageable pageable);
+
+    BigDecimal getProductsPrice(Set<UUID> productIds);
 
     ProductDto updateProduct(UpdateProductDto productDto);
 
