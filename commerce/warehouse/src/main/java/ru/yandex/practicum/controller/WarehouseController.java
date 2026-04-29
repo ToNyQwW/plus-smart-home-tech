@@ -7,6 +7,7 @@ import ru.yandex.practicum.client.warehouse.WarehouseClient;
 import ru.yandex.practicum.dto.commerce.ShoppingCartRequest;
 import ru.yandex.practicum.dto.commerce.warehouse.AddProductToWarehouseRequest;
 import ru.yandex.practicum.dto.commerce.AddressDto;
+import ru.yandex.practicum.dto.commerce.warehouse.AssemblyProductsForOrderRequest;
 import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
 import ru.yandex.practicum.dto.commerce.warehouse.NewProductInWarehouseRequest;
 import ru.yandex.practicum.service.WarehouseService;
@@ -31,6 +32,11 @@ public class WarehouseController implements WarehouseClient {
     @PostMapping("/check")
     public BookedProductsDto checkProductsForShoppingCart(@RequestBody @Valid ShoppingCartRequest request) {
         return warehouseService.checkProductsForShoppingCart(request);
+    }
+
+    @PostMapping("/assembly")
+    public BookedProductsDto assembleProductsForOrder(@RequestBody @Valid AssemblyProductsForOrderRequest request) {
+        return warehouseService.assembleProductsForOrder(request);
     }
 
     @GetMapping("/address")
