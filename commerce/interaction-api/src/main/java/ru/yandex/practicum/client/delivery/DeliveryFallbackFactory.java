@@ -24,7 +24,7 @@ public class DeliveryFallbackFactory implements FallbackFactory<DeliveryClient> 
                 if (cause instanceof DeliveryAlreadyExistsException) {
                     throw (DeliveryAlreadyExistsException) cause;
                 }
-                throw new DeliveryServiceUnavailableException("Delivery недоступен: " + cause.getMessage());
+                throw defaultFallback(cause);
             }
 
             @Override
@@ -32,7 +32,7 @@ public class DeliveryFallbackFactory implements FallbackFactory<DeliveryClient> 
                 if (cause instanceof DeliveryNotFoundException) {
                     throw (DeliveryNotFoundException) cause;
                 }
-                throw new DeliveryServiceUnavailableException("Delivery недоступен: " + cause.getMessage());
+                throw defaultFallback(cause);
             }
 
             @Override
@@ -43,7 +43,7 @@ public class DeliveryFallbackFactory implements FallbackFactory<DeliveryClient> 
                 if (cause instanceof InvalidDeliveryStateException) {
                     throw (InvalidDeliveryStateException) cause;
                 }
-                throw new DeliveryServiceUnavailableException("Delivery недоступен: " + cause.getMessage());
+                throw defaultFallback(cause);
             }
 
             @Override
@@ -51,7 +51,7 @@ public class DeliveryFallbackFactory implements FallbackFactory<DeliveryClient> 
                 if (cause instanceof DeliveryNotFoundException) {
                     throw (DeliveryNotFoundException) cause;
                 }
-                throw new DeliveryServiceUnavailableException("Delivery недоступен: " + cause.getMessage());
+                throw defaultFallback(cause);
             }
 
             @Override
@@ -59,7 +59,11 @@ public class DeliveryFallbackFactory implements FallbackFactory<DeliveryClient> 
                 if (cause instanceof DeliveryNotFoundException) {
                     throw (DeliveryNotFoundException) cause;
                 }
-                throw new DeliveryServiceUnavailableException("Delivery недоступен: " + cause.getMessage());
+                throw defaultFallback(cause);
+            }
+
+            private DeliveryServiceUnavailableException defaultFallback(Throwable cause) {
+                return new DeliveryServiceUnavailableException("Delivery недоступен: " + cause.getMessage());
             }
         };
     }

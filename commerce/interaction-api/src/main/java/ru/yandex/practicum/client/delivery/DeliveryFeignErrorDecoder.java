@@ -3,6 +3,7 @@ package ru.yandex.practicum.client.delivery;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.codec.ErrorDecoder;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.exception.ErrorResponse;
@@ -16,9 +17,10 @@ import java.io.InputStream;
 import static ru.yandex.practicum.util.ErrorMessagesConstants.*;
 
 @Component
+@RequiredArgsConstructor
 public class DeliveryFeignErrorDecoder implements ErrorDecoder {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     @Override
     @SneakyThrows
