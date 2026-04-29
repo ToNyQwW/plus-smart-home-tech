@@ -10,7 +10,6 @@ import ru.yandex.practicum.exception.ErrorResponse;
 import ru.yandex.practicum.exception.OrderNotFoundException;
 import ru.yandex.practicum.exception.ProductNotFoundException;
 import ru.yandex.practicum.exception.warehouse.LowQuantityException;
-import ru.yandex.practicum.exception.warehouse.ProductAlreadyExistsException;
 import ru.yandex.practicum.exception.warehouse.WarehouseServiceUnavailableException;
 
 import java.io.InputStream;
@@ -42,7 +41,6 @@ public class WarehouseFeignErrorDecoder implements ErrorDecoder {
         return switch (error.getMessage()) {
             case ORDER_NOT_FOUND ->  new OrderNotFoundException(error.getUserMessage());
             case PRODUCT_NOT_FOUND -> new ProductNotFoundException(error.getUserMessage());
-            case PRODUCT_ALREADY_EXISTS -> new ProductAlreadyExistsException(error.getUserMessage());
             case LOW_QUANTITY_IN_WAREHOUSE -> new LowQuantityException(error.getUserMessage());
             default -> new RuntimeException(error.getUserMessage());
         };

@@ -6,11 +6,12 @@ import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.dto.commerce.AddressDto;
 import ru.yandex.practicum.dto.commerce.ShoppingCartRequest;
-import ru.yandex.practicum.dto.commerce.warehouse.*;
+import ru.yandex.practicum.dto.commerce.warehouse.AssemblyProductsForOrderRequest;
+import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
+import ru.yandex.practicum.dto.commerce.warehouse.ShippedToDeliveryRequest;
 import ru.yandex.practicum.exception.OrderNotFoundException;
 import ru.yandex.practicum.exception.ProductNotFoundException;
 import ru.yandex.practicum.exception.warehouse.LowQuantityException;
-import ru.yandex.practicum.exception.warehouse.ProductAlreadyExistsException;
 import ru.yandex.practicum.exception.warehouse.WarehouseServiceUnavailableException;
 
 import java.util.Map;
@@ -22,22 +23,6 @@ public class WarehouseFallbackFactory implements FallbackFactory<WarehouseClient
     @Override
     public WarehouseClient create(Throwable cause) {
         return new WarehouseClient() {
-
-            @Override
-            public void newProductInWarehouse(NewProductInWarehouseRequest request) {
-                if (cause instanceof ProductAlreadyExistsException) {
-                    throw (ProductAlreadyExistsException) cause;
-                }
-                throw defaultFallback(cause);
-            }
-
-            @Override
-            public void addProductToWarehouse(AddProductToWarehouseRequest request) {
-                if (cause instanceof ProductNotFoundException) {
-                    throw (ProductNotFoundException) cause;
-                }
-                throw defaultFallback(cause);
-            }
 
             @Override
             public BookedProductsDto checkProductsForShoppingCart(ShoppingCartRequest request) {

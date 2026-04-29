@@ -8,13 +8,11 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.exception.ErrorResponse;
 import ru.yandex.practicum.exception.delivery.DeliveryAlreadyExistsException;
-import ru.yandex.practicum.exception.delivery.DeliveryNotFoundException;
 import ru.yandex.practicum.exception.delivery.DeliveryServiceUnavailableException;
-import ru.yandex.practicum.exception.delivery.InvalidDeliveryStateException;
 
 import java.io.InputStream;
 
-import static ru.yandex.practicum.util.ErrorMessagesConstants.*;
+import static ru.yandex.practicum.util.ErrorMessagesConstants.DELIVERY_ALREADY_EXISTS;
 
 @Component
 @RequiredArgsConstructor
@@ -31,7 +29,7 @@ public class DeliveryFeignErrorDecoder implements ErrorDecoder {
             ErrorResponse error = objectMapper.readValue(inputStream, ErrorResponse.class);
 
             return switch (response.status()) {
-                case 400, 404 -> mapWarehouseException(error);
+                case 400 -> mapWarehouseException(error);
                 default -> new DeliveryServiceUnavailableException(error.getUserMessage());
             };
         }
@@ -39,8 +37,6 @@ public class DeliveryFeignErrorDecoder implements ErrorDecoder {
 
     private RuntimeException mapWarehouseException(ErrorResponse error) {
         return switch (error.getMessage()) {
-            case DELIVERY_NOT_FOUND -> new DeliveryNotFoundException(error.getUserMessage());
-            case INVALID_DELIVERY_STATE -> new InvalidDeliveryStateException(error.getUserMessage());
             case DELIVERY_ALREADY_EXISTS -> new DeliveryAlreadyExistsException(error.getUserMessage());
             default -> new RuntimeException(error.getUserMessage());
         };
