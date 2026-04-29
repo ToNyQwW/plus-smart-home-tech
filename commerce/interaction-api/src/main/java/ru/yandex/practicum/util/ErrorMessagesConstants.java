@@ -7,6 +7,8 @@ public class ErrorMessagesConstants {
 
     public static final String UNAUTHORIZED = "Unauthorized";
 
+    public static final String ORDER_NOT_FOUND = "Order not found";
+
     public static final String PRODUCT_NOT_FOUND = "Product not found";
 
     public static final String DELIVERY_NOT_FOUND = "Delivery not found";

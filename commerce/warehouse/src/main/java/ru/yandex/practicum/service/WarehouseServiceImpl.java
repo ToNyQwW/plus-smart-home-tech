@@ -12,10 +12,8 @@ import ru.yandex.practicum.dal.repository.OrderRepository;
 import ru.yandex.practicum.dal.repository.ProductRepository;
 import ru.yandex.practicum.dto.commerce.AddressDto;
 import ru.yandex.practicum.dto.commerce.ShoppingCartRequest;
-import ru.yandex.practicum.dto.commerce.warehouse.AddProductToWarehouseRequest;
-import ru.yandex.practicum.dto.commerce.warehouse.AssemblyProductsForOrderRequest;
-import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
-import ru.yandex.practicum.dto.commerce.warehouse.NewProductInWarehouseRequest;
+import ru.yandex.practicum.dto.commerce.warehouse.*;
+import ru.yandex.practicum.exception.OrderNotFoundException;
 import ru.yandex.practicum.exception.ProductNotFoundException;
 import ru.yandex.practicum.exception.warehouse.LowQuantityException;
 import ru.yandex.practicum.exception.warehouse.ProductAlreadyExistsException;
@@ -91,6 +89,15 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
+    @Loggable
+    @Transactional
+    public void shippedToDelivery(ShippedToDeliveryRequest request) {
+        Order order = getOrderOrElseThrow(request.getOrderId());
+
+        order.setDeliveryId(request.getDeliveryId());
+    }
+
+    @Override
     @Transient
     public AddressDto getAddress() {
         log.info("Метод getAddress. возвращаемый адрес: {}", CURRENT_ADDRESS);
@@ -151,6 +158,11 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .deliveryVolume(deliveryVolume)
                 .fragile(fragile)
                 .build();
+    }
+
+    private Order getOrderOrElseThrow(UUID orderId) {
+        return orderRepository.findByOrderId(orderId).orElseThrow(() ->
+                new OrderNotFoundException("Заказ с id: " + orderId + " не найден"));
     }
 
     private void throwIfProductAlreadyExists(UUID productId) {

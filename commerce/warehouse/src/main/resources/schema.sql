@@ -11,12 +11,13 @@ CREATE TABLE IF NOT EXISTS warehouse_products
 
 CREATE TABLE IF NOT EXISTS orders
 (
-    order_id UUID PRIMARY KEY
+    order_id    UUID PRIMARY KEY,
+    delivery_id UUID
 );
 
 CREATE TABLE IF NOT EXISTS order_product
 (
-    order_id   UUID   NOT NULL REFERENCES orders(order_id),
+    order_id   UUID   NOT NULL REFERENCES orders (order_id),
     product_id UUID   NOT NULL REFERENCES warehouse_products (product_id),
     quantity   BIGINT NOT NULL CHECK (quantity >= 0),
     PRIMARY KEY (order_id, product_id)

@@ -20,6 +20,9 @@ public class Order {
     @Column(name = "order_id")
     private UUID orderId;
 
+    @Column(name = "delivery_id")
+    private UUID deliveryId;
+
     @ElementCollection
     @CollectionTable(
             name = "order_product",

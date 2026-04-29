@@ -5,11 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.client.warehouse.WarehouseClient;
 import ru.yandex.practicum.dto.commerce.ShoppingCartRequest;
-import ru.yandex.practicum.dto.commerce.warehouse.AddProductToWarehouseRequest;
+import ru.yandex.practicum.dto.commerce.warehouse.*;
 import ru.yandex.practicum.dto.commerce.AddressDto;
-import ru.yandex.practicum.dto.commerce.warehouse.AssemblyProductsForOrderRequest;
-import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
-import ru.yandex.practicum.dto.commerce.warehouse.NewProductInWarehouseRequest;
 import ru.yandex.practicum.service.WarehouseService;
 
 @RestController
@@ -37,6 +34,11 @@ public class WarehouseController implements WarehouseClient {
     @PostMapping("/assembly")
     public BookedProductsDto assembleProductsForOrder(@RequestBody @Valid AssemblyProductsForOrderRequest request) {
         return warehouseService.assembleProductsForOrder(request);
+    }
+
+    @PostMapping("/shipped")
+    public void shippedToDelivery(@RequestBody @Valid ShippedToDeliveryRequest request) {
+        warehouseService.shippedToDelivery(request);
     }
 
     @GetMapping("/address")
