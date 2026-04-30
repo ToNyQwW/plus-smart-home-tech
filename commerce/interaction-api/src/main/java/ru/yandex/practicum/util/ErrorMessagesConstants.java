@@ -33,4 +33,5 @@ public class ErrorMessagesConstants {
 
     public static final String NO_PRODUCTS_IN_SHOPPING_CART = "Products int shopping cart not found";
 
+    public static final String SHOPPING_STORE_SERVICE_UNAVAILABLE = "Shopping-store service unavailable";
 }

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 public class DeliveryFeignConfig {
 
     @Bean
-    public ErrorDecoder errorDecoder(ObjectMapper  objectMapper) {
+    public ErrorDecoder errorDecoder(ObjectMapper objectMapper) {
         return new DeliveryFeignErrorDecoder(objectMapper);
     }
 }

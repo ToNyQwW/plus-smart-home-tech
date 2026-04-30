@@ -12,6 +12,9 @@ spring:
       discovery:
         enabled: true
         service-id: config-server
+    openfeign:
+      circuitbreaker:
+        enabled: true
 eureka:
   client:
     serviceUrl:

@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.exception.payment.PaymentAlreadyExistsException;
+import ru.yandex.practicum.exception.store.ShoppingStoreServiceUnavailableException;
 import ru.yandex.practicum.util.ErrorMessagesConstants;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestControllerAdvice
@@ -24,6 +25,38 @@ public class ErrorHandler {
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.PAYMENT_ALREADY_EXISTS)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ErrorResponse handleProductNotFoundException(ProductNotFoundException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception ProductNotFoundException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(NOT_FOUND)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.PRODUCT_NOT_FOUND)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    @ExceptionHandler(ShoppingStoreServiceUnavailableException.class)
+    public ErrorResponse handleShoppingStoreServiceUnavailableException(ShoppingStoreServiceUnavailableException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception ShoppingStoreServiceUnavailableException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(SERVICE_UNAVAILABLE)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.SHOPPING_STORE_SERVICE_UNAVAILABLE)
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();
