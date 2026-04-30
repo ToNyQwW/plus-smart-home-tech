@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.client.ShoppingStoreClient;
+import ru.yandex.practicum.client.store.ShoppingStoreClient;
 import ru.yandex.practicum.dto.commerce.store.CreateProductDto;
 import ru.yandex.practicum.dto.commerce.store.ProductDto;
 import ru.yandex.practicum.dto.commerce.store.SetProductQuantityStateRequest;
@@ -19,6 +19,7 @@ import ru.yandex.practicum.service.ShoppingStoreService;
 import ru.yandex.practicum.util.PaginationConstants;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -52,7 +53,7 @@ public class ShoppingStoreController implements ShoppingStoreClient {
     }
 
     @GetMapping("/productsPrice")
-    public BigDecimal getProductsPrice(@RequestBody @Valid @NotEmpty Set<UUID> productIds) {
+    public Map<UUID, BigDecimal> getProductsPrice(@RequestBody @Valid @NotEmpty Set<UUID> productIds) {
         return shoppingStoreService.getProductsPrice(productIds);
     }
 

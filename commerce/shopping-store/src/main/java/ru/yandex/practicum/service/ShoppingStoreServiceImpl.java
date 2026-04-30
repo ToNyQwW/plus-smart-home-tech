@@ -20,11 +20,9 @@ import ru.yandex.practicum.model.ProductState;
 import ru.yandex.practicum.model.QuantityState;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
 @Slf4j
@@ -72,15 +70,14 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     @Loggable
     @Transactional(readOnly = true)
-    public BigDecimal getProductsPrice(Set<UUID> productIds) {
+    public Map<UUID, BigDecimal> getProductsPrice(Set<UUID> productIds) {
 
         List<Product> products = getProductsOrElseThrow(productIds);
         log.info("Найденные товары: {}", products);
 
         return products.stream()
-                .map(Product::getPrice)
-                .map(BigDecimal::valueOf)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .collect(toMap(Product::getProductId,
+                        product -> BigDecimal.valueOf(product.getPrice())));
     }
 
     @Override
