@@ -27,6 +27,8 @@ public class ErrorMessagesConstants {
 
     public static final String LOW_QUANTITY_IN_WAREHOUSE = "Low Quantity in Warehouse";
 
+    public static final String PAYMENT_SERVICE_UNAVAILABLE = "Payment service unavailable";
+
     public static final String DELIVERY_SERVICE_UNAVAILABLE = "Delivery service unavailable";
 
     public static final String WAREHOUSE_SERVICE_UNAVAILABLE = "Warehouse service unavailable";

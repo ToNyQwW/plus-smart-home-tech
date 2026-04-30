@@ -13,6 +13,8 @@ public interface OrderService {
 
     OrderDto calculateDeliveryPrice(UUID orderId);
 
+    OrderDto calculateTotalPrice(UUID orderId);
+
     OrderDto returnOrder(ProductReturnRequest request);
 
     List<OrderDto> getUserOrders(String username);

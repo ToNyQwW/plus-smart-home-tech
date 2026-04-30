@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.aop.Loggable;
 import ru.yandex.practicum.client.delivery.DeliveryClient;
+import ru.yandex.practicum.client.payment.PaymentClient;
 import ru.yandex.practicum.client.warehouse.WarehouseClient;
 import ru.yandex.practicum.dal.entity.Order;
 import ru.yandex.practicum.dal.repository.OrderRepository;
@@ -36,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
 
+    private final PaymentClient paymentClient;
     private final DeliveryClient deliveryClient;
     private final WarehouseClient warehouseClient;
 
@@ -80,8 +82,23 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto calculateDeliveryPrice(UUID orderId) {
         Order order = getOrderOrElseThrow(orderId);
 
-        BigDecimal bigDecimal = deliveryClient.deliveryCost(orderMapper.toCalculateDeliveryCostRequest(order));
-        order.setDeliveryPrice(bigDecimal);
+        BigDecimal deliveryPrice = deliveryClient.deliveryCost(orderMapper.toCalculateDeliveryCostRequest(order));
+        order.setDeliveryPrice(deliveryPrice);
+
+        return orderMapper.toOrderDto(order);
+    }
+
+    @Override
+    @Loggable
+    @Transactional
+    public OrderDto calculateTotalPrice(UUID orderId) {
+        Order order = getOrderOrElseThrow(orderId);
+
+        BigDecimal productPrice = paymentClient.productCost(orderMapper.toCalculateProductCostRequest(order));
+        order.setProductPrice(productPrice);
+
+        BigDecimal totalPrice = paymentClient.totalCost(orderMapper.toCalculateTotalCostRequest(order));
+        order.setTotalPrice(totalPrice);
 
         return orderMapper.toOrderDto(order);
     }

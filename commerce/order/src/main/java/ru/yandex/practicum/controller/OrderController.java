@@ -32,6 +32,11 @@ public class OrderController {
         return orderService.calculateDeliveryPrice(orderId);
     }
 
+    @PostMapping("/calculate/total")
+    public OrderDto calculateTotalPrice(@RequestBody UUID orderId) {
+        return orderService.calculateTotalPrice(orderId);
+    }
+
     @PostMapping("/return")
     public OrderDto returnOrder(@RequestBody @Valid ProductReturnRequest request) {
         return orderService.returnOrder(request);

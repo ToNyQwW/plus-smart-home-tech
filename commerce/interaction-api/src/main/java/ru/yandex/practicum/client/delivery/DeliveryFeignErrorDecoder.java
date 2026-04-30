@@ -31,13 +31,13 @@ public class DeliveryFeignErrorDecoder implements ErrorDecoder {
             ErrorResponse error = objectMapper.readValue(inputStream, ErrorResponse.class);
 
             return switch (response.status()) {
-                case 400, 404 -> mapWarehouseException(error);
+                case 400, 404 -> mapDeliveryException(error);
                 default -> new DeliveryServiceUnavailableException(error.getUserMessage());
             };
         }
     }
 
-    private RuntimeException mapWarehouseException(ErrorResponse error) {
+    private RuntimeException mapDeliveryException(ErrorResponse error) {
         return switch (error.getMessage()) {
             case DELIVERY_NOT_FOUND -> new DeliveryNotFoundException(error.getUserMessage());
             case DELIVERY_ALREADY_EXISTS -> new DeliveryAlreadyExistsException(error.getUserMessage());

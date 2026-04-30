@@ -18,7 +18,7 @@ public class ShoppingStoreFallbackFactory implements FallbackFactory<ShoppingSto
 
             @Override
             public Map<UUID, BigDecimal> getProductsPrice(Set<UUID> productIds) {
-                if(cause instanceof ProductNotFoundException){
+                if (cause instanceof ProductNotFoundException) {
                     throw (ProductNotFoundException) cause;
                 }
                 throw defaultFallback(cause);

@@ -8,6 +8,8 @@ import ru.yandex.practicum.exception.delivery.DeliveryAlreadyExistsException;
 import ru.yandex.practicum.exception.delivery.DeliveryNotFoundException;
 import ru.yandex.practicum.exception.delivery.DeliveryServiceUnavailableException;
 import ru.yandex.practicum.exception.order.InvalidOrderStateException;
+import ru.yandex.practicum.exception.payment.PaymentServiceUnavailableException;
+import ru.yandex.practicum.exception.store.ShoppingStoreServiceUnavailableException;
 import ru.yandex.practicum.exception.warehouse.LowQuantityException;
 import ru.yandex.practicum.exception.warehouse.WarehouseServiceUnavailableException;
 import ru.yandex.practicum.util.ErrorMessagesConstants;
@@ -125,6 +127,38 @@ public class ErrorHandler {
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.INVALID_ORDER_STATE)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    @ExceptionHandler(ShoppingStoreServiceUnavailableException.class)
+    public ErrorResponse handleShoppingStoreServiceUnavailableException(ShoppingStoreServiceUnavailableException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception ShoppingStoreServiceUnavailableException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(SERVICE_UNAVAILABLE)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.SHOPPING_STORE_SERVICE_UNAVAILABLE)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    @ExceptionHandler(PaymentServiceUnavailableException.class)
+    public ErrorResponse handlePaymentServiceUnavailableException(PaymentServiceUnavailableException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception PaymentServiceUnavailableException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(SERVICE_UNAVAILABLE)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.PAYMENT_SERVICE_UNAVAILABLE)
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();

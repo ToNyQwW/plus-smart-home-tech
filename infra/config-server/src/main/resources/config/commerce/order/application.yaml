@@ -41,6 +41,9 @@ resilience4j:
       delivery:
         base-config: default
 
+      payment:
+        base-config: default
+
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
