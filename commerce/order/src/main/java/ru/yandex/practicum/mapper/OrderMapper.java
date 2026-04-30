@@ -7,6 +7,7 @@ import ru.yandex.practicum.dto.commerce.delivery.CalculateDeliveryCostRequest;
 import ru.yandex.practicum.dto.commerce.order.OrderDto;
 import ru.yandex.practicum.dto.commerce.payment.CalculateProductCostRequest;
 import ru.yandex.practicum.dto.commerce.payment.CalculateTotalCostRequest;
+import ru.yandex.practicum.dto.commerce.warehouse.AssemblyProductsForOrderRequest;
 import ru.yandex.practicum.model.OrderCreationContext;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
@@ -28,4 +29,6 @@ public interface OrderMapper {
     CalculateProductCostRequest toCalculateProductCostRequest(Order order);
 
     CalculateDeliveryCostRequest toCalculateDeliveryCostRequest(Order order);
+
+    AssemblyProductsForOrderRequest toAssemblyProductsForOrderRequest(Order order);
 }

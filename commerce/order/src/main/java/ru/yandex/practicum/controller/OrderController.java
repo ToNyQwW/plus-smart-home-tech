@@ -37,6 +37,11 @@ public class OrderController {
         return orderService.calculateTotalPrice(orderId);
     }
 
+    @PostMapping("/assembly")
+    public OrderDto assemblyOrder(@RequestBody UUID orderId) {
+        return orderService.assemblyOrder(orderId);
+    }
+
     @PostMapping("/return")
     public OrderDto returnOrder(@RequestBody @Valid ProductReturnRequest request) {
         return orderService.returnOrder(request);

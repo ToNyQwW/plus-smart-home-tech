@@ -28,8 +28,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.yandex.practicum.model.OrderState.CANCELED;
-import static ru.yandex.practicum.model.OrderState.PRODUCT_RETURNED;
+import static ru.yandex.practicum.model.OrderState.*;
 
 @Service
 @RequiredArgsConstructor
@@ -99,6 +98,24 @@ public class OrderServiceImpl implements OrderService {
 
         BigDecimal totalPrice = paymentClient.totalCost(orderMapper.toCalculateTotalCostRequest(order));
         order.setTotalPrice(totalPrice);
+
+        return orderMapper.toOrderDto(order);
+    }
+
+    @Override
+    @Loggable
+    @Transactional
+    public OrderDto assemblyOrder(UUID orderId) {
+        Order order = getOrderOrElseThrow(orderId);
+
+        BookedProductsDto bookedProducts = warehouseClient.assembleProductsForOrder(
+                orderMapper.toAssemblyProductsForOrderRequest(order)
+        );
+
+        order.setFragile(bookedProducts.isFragile());
+        order.setDeliveryVolume(bookedProducts.getDeliveryVolume());
+        order.setDeliveryWeight(bookedProducts.getDeliveryWeight());
+        order.setState(ASSEMBLED);
 
         return orderMapper.toOrderDto(order);
     }

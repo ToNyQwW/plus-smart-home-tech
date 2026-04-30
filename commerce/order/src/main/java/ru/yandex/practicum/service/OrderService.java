@@ -15,6 +15,8 @@ public interface OrderService {
 
     OrderDto calculateTotalPrice(UUID orderId);
 
+    OrderDto assemblyOrder(UUID orderId);
+
     OrderDto returnOrder(ProductReturnRequest request);
 
     List<OrderDto> getUserOrders(String username);
