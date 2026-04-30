@@ -27,6 +27,8 @@ public interface OrderService {
 
     OrderDto deliveryOrderFailed(UUID orderId);
 
+    OrderDto completedOrder(UUID orderId);
+
     OrderDto returnOrder(ProductReturnRequest request);
 
     List<OrderDto> getUserOrders(String username);
