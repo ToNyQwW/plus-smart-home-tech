@@ -52,7 +52,7 @@ public class ShoppingStoreController implements ShoppingStoreClient {
         return shoppingStoreService.getProductsByCategory(category, pageable);
     }
 
-    @GetMapping("/productsPrice")
+    @PostMapping("/productsPrice")
     public Map<UUID, BigDecimal> getProductsPrice(@RequestBody @Valid @NotEmpty Set<UUID> productIds) {
         return shoppingStoreService.getProductsPrice(productIds);
     }

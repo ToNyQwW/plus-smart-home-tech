@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 public class ShoppingStoreFeignConfig {
 
     @Bean
-    public ErrorDecoder errorDecoder(ObjectMapper  objectMapper) {
+    public ErrorDecoder errorDecoder(ObjectMapper objectMapper) {
         return new ShoppingStoreFeignErrorDecoder(objectMapper);
     }
 }

@@ -76,8 +76,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
         log.info("Найденные товары: {}", products);
 
         return products.stream()
-                .collect(toMap(Product::getProductId,
-                        product -> BigDecimal.valueOf(product.getPrice())));
+                .collect(toMap(Product::getProductId, Product::getPrice));
     }
 
     @Override
