@@ -37,6 +37,16 @@ public class OrderController {
         return orderService.calculateTotalPrice(orderId);
     }
 
+    @PostMapping("/payment")
+    public OrderDto paymentSuccess(@RequestBody UUID orderId) {
+        return orderService.paymentSuccess(orderId);
+    }
+
+    @PostMapping("/payment")
+    public OrderDto paymentFailed(@RequestBody UUID orderId) {
+        return orderService.paymentFailed(orderId);
+    }
+
     @PostMapping("/assembly")
     public OrderDto assemblyOrder(@RequestBody UUID orderId) {
         return orderService.assemblyOrder(orderId);

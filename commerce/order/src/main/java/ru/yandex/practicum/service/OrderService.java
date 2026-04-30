@@ -15,6 +15,10 @@ public interface OrderService {
 
     OrderDto calculateTotalPrice(UUID orderId);
 
+    OrderDto paymentSuccess(UUID orderId);
+
+    OrderDto paymentFailed(UUID orderId);
+
     OrderDto assemblyOrder(UUID orderId);
 
     OrderDto assemblyOrderFailed(UUID orderId);

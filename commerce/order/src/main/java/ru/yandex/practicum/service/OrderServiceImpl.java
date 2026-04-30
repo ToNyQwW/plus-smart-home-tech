@@ -105,6 +105,28 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Loggable
     @Transactional
+    public OrderDto paymentSuccess(UUID orderId) {
+        Order order = getOrderOrElseThrow(orderId);
+
+        order.setState(PAID);
+
+        return orderMapper.toOrderDto(order);
+    }
+
+    @Override
+    @Loggable
+    @Transactional
+    public OrderDto paymentFailed(UUID orderId) {
+        Order order = getOrderOrElseThrow(orderId);
+
+        order.setState(PAYMENT_FAILED);
+
+        return orderMapper.toOrderDto(order);
+    }
+
+    @Override
+    @Loggable
+    @Transactional
     public OrderDto assemblyOrder(UUID orderId) {
         Order order = getOrderOrElseThrow(orderId);
 
