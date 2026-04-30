@@ -47,6 +47,11 @@ public class OrderController {
         return orderService.assemblyOrderFailed(orderId);
     }
 
+    @PostMapping("/delivery/failed")
+    public OrderDto deliveryOrderFailed(@RequestBody UUID orderId) {
+        return orderService.deliveryOrderFailed(orderId);
+    }
+
     @PostMapping("/return")
     public OrderDto returnOrder(@RequestBody @Valid ProductReturnRequest request) {
         return orderService.returnOrder(request);
