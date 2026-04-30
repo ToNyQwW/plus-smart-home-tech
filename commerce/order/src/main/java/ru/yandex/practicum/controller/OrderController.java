@@ -11,6 +11,7 @@ import ru.yandex.practicum.dto.commerce.order.ProductReturnRequest;
 import ru.yandex.practicum.service.OrderService;
 
 import java.util.List;
+import java.util.UUID;
 
 @Validated
 @RestController
@@ -24,6 +25,11 @@ public class OrderController {
     public OrderDto createOrder(@RequestParam @NotBlank String username,
                                 @RequestBody @Valid CreateNewOrderRequest request) {
         return orderService.createOrder(username, request);
+    }
+
+    @PostMapping("/calculate/delivery")
+    public OrderDto calculateDeliveryPrice(@RequestBody UUID orderId) {
+        return orderService.calculateDeliveryPrice(orderId);
     }
 
     @PostMapping("/return")

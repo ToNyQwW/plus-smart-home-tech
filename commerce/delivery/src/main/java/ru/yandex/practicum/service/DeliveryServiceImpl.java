@@ -51,8 +51,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Loggable
-    public DeliveryDto completeDelivery(UUID orderId) {
-        Delivery delivery = getDeliveryOrThrowException(orderId);
+    public DeliveryDto completeDelivery(UUID deliveryId) {
+        Delivery delivery = getDeliveryOrThrowException(deliveryId);
 
         assertDeliveryState(delivery, DeliveryState.IN_PROGRESS);
 
@@ -63,8 +63,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Loggable
-    public DeliveryDto startDelivery(UUID orderId) {
-        Delivery delivery = getDeliveryOrThrowException(orderId);
+    public DeliveryDto startDelivery(UUID deliveryId) {
+        Delivery delivery = getDeliveryOrThrowException(deliveryId);
 
         assertDeliveryState(delivery, DeliveryState.CREATED);
 
@@ -75,8 +75,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Loggable
-    public DeliveryDto failDelivery(UUID orderId) {
-        Delivery delivery = getDeliveryOrThrowException(orderId);
+    public DeliveryDto failDelivery(UUID deliveryId) {
+        Delivery delivery = getDeliveryOrThrowException(deliveryId);
 
         if (delivery.getDeliveryState() != DeliveryState.FAILED) {
             delivery.setDeliveryState(DeliveryState.FAILED);
@@ -88,7 +88,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     @Loggable
     public BigDecimal calculateDeliveryCost(CalculateDeliveryCostRequest request) {
-        Delivery delivery = getDeliveryOrThrowException(request.getOrderId());
+        Delivery delivery = getDeliveryOrThrowException(request.getDeliveryId());
 
         return deliveryCostCalculator.calculateDeliveryCost(
                 delivery.getFromAddress().getStreet(),
@@ -119,13 +119,13 @@ public class DeliveryServiceImpl implements DeliveryService {
     private static void assertDeliveryState(Delivery delivery, DeliveryState expectedState) {
         DeliveryState actualState = delivery.getDeliveryState();
         if (actualState != expectedState) {
-            throw new InvalidDeliveryStateException(delivery.getOrderId(), actualState, expectedState);
+            throw new InvalidDeliveryStateException(delivery.getDeliveryId(), actualState, expectedState);
         }
     }
 
-    private Delivery getDeliveryOrThrowException(UUID orderId) {
-        return deliveryRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new DeliveryNotFoundException("Доставка с id заказа: " + orderId + " не найдена"));
+    private Delivery getDeliveryOrThrowException(UUID deliveryId) {
+        return deliveryRepository.findByDeliveryId(deliveryId)
+                .orElseThrow(() -> new DeliveryNotFoundException("Доставка с id: " + deliveryId + " не найдена"));
     }
 
     private void throwIfDeliveryWithOrderIdExists(UUID orderId) {

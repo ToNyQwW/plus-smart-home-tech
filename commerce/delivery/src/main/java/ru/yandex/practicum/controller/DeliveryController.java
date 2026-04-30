@@ -25,18 +25,18 @@ public class DeliveryController implements DeliveryClient {
     }
 
     @PostMapping("/successful")
-    public DeliveryDto successfulDelivery(@RequestBody UUID orderId) {
-        return deliveryService.completeDelivery(orderId);
+    public DeliveryDto successfulDelivery(@RequestBody UUID deliveryId) {
+        return deliveryService.completeDelivery(deliveryId);
     }
 
     @PostMapping("/picked")
-    public DeliveryDto pickedDelivery(@RequestBody UUID orderId) {
-        return deliveryService.startDelivery(orderId);
+    public DeliveryDto pickedDelivery(@RequestBody UUID deliveryId) {
+        return deliveryService.startDelivery(deliveryId);
     }
 
     @PostMapping("/failed")
-    public DeliveryDto failedDelivery(@RequestBody UUID orderId) {
-        return deliveryService.failDelivery(orderId);
+    public DeliveryDto failedDelivery(@RequestBody UUID deliveryId) {
+        return deliveryService.failDelivery(deliveryId);
     }
 
     @PostMapping("/cost")

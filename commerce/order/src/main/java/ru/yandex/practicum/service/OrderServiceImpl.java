@@ -23,6 +23,7 @@ import ru.yandex.practicum.model.DeliveryState;
 import ru.yandex.practicum.model.OrderCreationContext;
 import ru.yandex.practicum.model.OrderState;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,6 +70,18 @@ public class OrderServiceImpl implements OrderService {
 
         order.setDeliveryId(delivery.getDeliveryId());
         orderRepository.save(order);
+
+        return orderMapper.toOrderDto(order);
+    }
+
+    @Override
+    @Loggable
+    @Transactional
+    public OrderDto calculateDeliveryPrice(UUID orderId) {
+        Order order = getOrderOrElseThrow(orderId);
+
+        BigDecimal bigDecimal = deliveryClient.deliveryCost(orderMapper.toCalculateDeliveryCostRequest(order));
+        order.setDeliveryPrice(bigDecimal);
 
         return orderMapper.toOrderDto(order);
     }

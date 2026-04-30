@@ -12,7 +12,7 @@ import java.util.UUID;
 public class CalculateDeliveryCostRequest {
 
     @NotNull
-    UUID orderId;
+    UUID deliveryId;
 
     @Positive
     double deliveryWeight;

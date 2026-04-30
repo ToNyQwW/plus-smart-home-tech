@@ -12,5 +12,5 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
     boolean existsByOrderId(UUID orderId);
 
     @EntityGraph(attributePaths = {"fromAddress", "toAddress"})
-    Optional<Delivery> findByOrderId(UUID orderId);
+    Optional<Delivery> findByDeliveryId(UUID deliveryId);
 }

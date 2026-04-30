@@ -11,11 +11,11 @@ public interface DeliveryService {
 
     DeliveryDto createNewDelivery(CreateNewDeliveryRequest request);
 
-    DeliveryDto completeDelivery(UUID orderId);
+    DeliveryDto completeDelivery(UUID deliveryId);
 
-    DeliveryDto startDelivery(UUID orderId);
+    DeliveryDto startDelivery(UUID deliveryId);
 
-    DeliveryDto failDelivery(UUID orderId);
+    DeliveryDto failDelivery(UUID deliveryId);
 
     BigDecimal calculateDeliveryCost(CalculateDeliveryCostRequest request);
 }

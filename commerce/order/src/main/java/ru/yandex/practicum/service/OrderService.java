@@ -5,10 +5,13 @@ import ru.yandex.practicum.dto.commerce.order.OrderDto;
 import ru.yandex.practicum.dto.commerce.order.ProductReturnRequest;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface OrderService {
 
     OrderDto createOrder(String username, CreateNewOrderRequest request);
+
+    OrderDto calculateDeliveryPrice(UUID orderId);
 
     OrderDto returnOrder(ProductReturnRequest request);
 
