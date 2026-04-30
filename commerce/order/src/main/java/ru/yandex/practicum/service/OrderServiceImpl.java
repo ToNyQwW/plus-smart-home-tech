@@ -123,6 +123,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Loggable
     @Transactional
+    public OrderDto assemblyOrderFailed(UUID orderId) {
+        Order order = getOrderOrElseThrow(orderId);
+
+        order.setState(ASSEMBLY_FAILED);
+
+        return orderMapper.toOrderDto(order);
+    }
+
+    @Override
+    @Loggable
+    @Transactional
     public OrderDto returnOrder(ProductReturnRequest request) {
         UUID orderId = request.getOrderId();
         Order order = getOrderOrElseThrow(orderId);
