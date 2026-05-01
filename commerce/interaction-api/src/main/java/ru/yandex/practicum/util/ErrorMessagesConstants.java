@@ -11,6 +11,8 @@ public class ErrorMessagesConstants {
 
     public static final String PRODUCT_NOT_FOUND = "Product not found";
 
+    public static final String PAYMENT_NOT_FOUND = "Payment not found";
+
     public static final String DELIVERY_NOT_FOUND = "Delivery not found";
 
     public static final String INVALID_ORDER_STATE = "Invalid order state";
@@ -26,6 +28,8 @@ public class ErrorMessagesConstants {
     public static final String SHOPPING_CART_NOT_FOUND = "Shopping cart not found";
 
     public static final String LOW_QUANTITY_IN_WAREHOUSE = "Low Quantity in Warehouse";
+
+    public static final String ORDER_SERVICE_UNAVAILABLE = "Order service unavailable";
 
     public static final String PAYMENT_SERVICE_UNAVAILABLE = "Payment service unavailable";
 

@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.yandex.practicum.exception.order.OrderServiceUnavailableException;
 import ru.yandex.practicum.exception.payment.PaymentAlreadyExistsException;
+import ru.yandex.practicum.exception.payment.PaymentNotFoundException;
 import ru.yandex.practicum.exception.store.ShoppingStoreServiceUnavailableException;
 import ru.yandex.practicum.util.ErrorMessagesConstants;
 
@@ -31,6 +33,22 @@ public class ErrorHandler {
     }
 
     @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(PaymentNotFoundException.class)
+    public ErrorResponse handlePaymentNotFoundException(PaymentNotFoundException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception PaymentNotFoundException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(NOT_FOUND)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.PAYMENT_NOT_FOUND)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(NOT_FOUND)
     @ExceptionHandler(ProductNotFoundException.class)
     public ErrorResponse handleProductNotFoundException(ProductNotFoundException e) {
         String exceptionMessage = e.getMessage();
@@ -41,6 +59,22 @@ public class ErrorHandler {
                 .httpStatus(NOT_FOUND)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.PRODUCT_NOT_FOUND)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ErrorResponse handleOrderNotFoundException(OrderNotFoundException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception OrderNotFoundException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(NOT_FOUND)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.ORDER_NOT_FOUND)
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();
@@ -57,6 +91,22 @@ public class ErrorHandler {
                 .httpStatus(SERVICE_UNAVAILABLE)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.SHOPPING_STORE_SERVICE_UNAVAILABLE)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    @ExceptionHandler(OrderServiceUnavailableException.class)
+    public ErrorResponse handleOrderServiceUnavailableException(OrderServiceUnavailableException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception OrderServiceUnavailableException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(SERVICE_UNAVAILABLE)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.ORDER_SERVICE_UNAVAILABLE)
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();

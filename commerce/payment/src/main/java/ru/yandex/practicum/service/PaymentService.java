@@ -6,6 +6,7 @@ import ru.yandex.practicum.dto.commerce.payment.CreatePaymentRequest;
 import ru.yandex.practicum.dto.commerce.payment.PaymentDto;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public interface PaymentService {
 
@@ -14,4 +15,8 @@ public interface PaymentService {
     BigDecimal productCost(CalculateProductCostRequest request);
 
     BigDecimal calculateTotalCost(CalculateTotalCostRequest request);
+
+    PaymentDto paymentSuccess(UUID paymentId);
+
+    PaymentDto paymentFailed(UUID paymentId);
 }

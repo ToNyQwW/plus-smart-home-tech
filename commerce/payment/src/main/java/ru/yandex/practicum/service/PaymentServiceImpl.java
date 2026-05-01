@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.aop.Loggable;
+import ru.yandex.practicum.client.order.OrderClient;
 import ru.yandex.practicum.client.store.ShoppingStoreClient;
 import ru.yandex.practicum.dal.entity.Payment;
 import ru.yandex.practicum.dal.repository.PaymentRepository;
@@ -13,7 +14,9 @@ import ru.yandex.practicum.dto.commerce.payment.CalculateTotalCostRequest;
 import ru.yandex.practicum.dto.commerce.payment.CreatePaymentRequest;
 import ru.yandex.practicum.dto.commerce.payment.PaymentDto;
 import ru.yandex.practicum.exception.payment.PaymentAlreadyExistsException;
+import ru.yandex.practicum.exception.payment.PaymentNotFoundException;
 import ru.yandex.practicum.mapper.PaymentMapper;
+import ru.yandex.practicum.model.PaymentState;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -28,6 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentMapper paymentMapper;
     private final PaymentRepository paymentRepository;
 
+    private final OrderClient orderClient;
     private final ShoppingStoreClient shoppingStoreClient;
 
     private static final BigDecimal VAT_RATE = BigDecimal.valueOf(0.1);
@@ -92,6 +96,32 @@ public class PaymentServiceImpl implements PaymentService {
                 .add(request.getDeliveryPrice());
     }
 
+    @Override
+    @Loggable
+    @Transactional
+    public PaymentDto paymentSuccess(UUID paymentId) {
+        Payment payment = getPaymentOrElseThrow(paymentId);
+
+        payment.setPaymentState(PaymentState.SUCCESS);
+
+        orderClient.paymentSuccess(payment.getOrderId());
+
+        return paymentMapper.toPaymentDto(payment);
+    }
+
+    @Override
+    @Loggable
+    @Transactional
+    public PaymentDto paymentFailed(UUID paymentId) {
+        Payment payment = getPaymentOrElseThrow(paymentId);
+
+        payment.setPaymentState(PaymentState.FAILED);
+
+        orderClient.paymentFailed(payment.getOrderId());
+
+        return paymentMapper.toPaymentDto(payment);
+    }
+
     private Optional<Payment> getExistingPayment(UUID orderId) {
         Optional<Payment> paymentOptional = paymentRepository.findByOrderId(orderId);
 
@@ -105,5 +135,10 @@ public class PaymentServiceImpl implements PaymentService {
         if (paymentRepository.existsByOrderId(orderId)) {
             throw new PaymentAlreadyExistsException("Платеж для заказа " + orderId + " уже существует");
         }
+    }
+
+    private Payment getPaymentOrElseThrow(UUID paymentId) {
+        return paymentRepository.findById(paymentId).orElseThrow(() ->
+                new PaymentNotFoundException("Платеж с id: " + paymentId + " не найден"));
     }
 }

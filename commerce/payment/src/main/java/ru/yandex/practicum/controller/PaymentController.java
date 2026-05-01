@@ -13,6 +13,7 @@ import ru.yandex.practicum.dto.commerce.payment.PaymentDto;
 import ru.yandex.practicum.service.PaymentService;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,5 +35,15 @@ public class PaymentController {
     @PostMapping("/totalCost")
     public BigDecimal totalCost(@RequestBody @Valid CalculateTotalCostRequest request) {
         return paymentService.calculateTotalCost(request);
+    }
+
+    @PostMapping("/refund")
+    public PaymentDto paymentSuccess(@RequestBody UUID paymentId) {
+        return paymentService.paymentSuccess(paymentId);
+    }
+
+    @PostMapping("/failed")
+    public PaymentDto paymentFailed(@RequestBody UUID paymentId) {
+        return paymentService.paymentFailed(paymentId);
     }
 }
