@@ -68,6 +68,22 @@ public class ErrorHandler {
                 .build();
     }
 
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ErrorResponse handleOrderNotFoundException(OrderNotFoundException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception OrderNotFoundException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(NOT_FOUND)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.ORDER_NOT_FOUND)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
     @ResponseStatus(SERVICE_UNAVAILABLE)
     @ExceptionHandler(WarehouseServiceUnavailableException.class)
     public ErrorResponse handleWarehouseServiceUnavailableException(WarehouseServiceUnavailableException e) {
