@@ -43,7 +43,7 @@ public class OrderController implements OrderClient {
         return orderService.paymentSuccess(orderId);
     }
 
-    @PostMapping("/payment")
+    @PostMapping("/payment/failed")
     public OrderDto paymentFailed(@RequestBody UUID orderId) {
         return orderService.paymentFailed(orderId);
     }
@@ -68,7 +68,7 @@ public class OrderController implements OrderClient {
         return orderService.deliveryOrderFailed(orderId);
     }
 
-    @PostMapping("//completed")
+    @PostMapping("/completed")
     public OrderDto completedOrder(@RequestBody UUID orderId) {
         return orderService.completedOrder(orderId);
     }
