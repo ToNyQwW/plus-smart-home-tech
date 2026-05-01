@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.aop.Loggable;
+import ru.yandex.practicum.client.order.OrderClient;
+import ru.yandex.practicum.client.warehouse.WarehouseClient;
 import ru.yandex.practicum.dal.entity.Address;
 import ru.yandex.practicum.dal.entity.Delivery;
 import ru.yandex.practicum.dal.repository.AddressRepository;
@@ -29,10 +31,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DeliveryServiceImpl implements DeliveryService {
 
-    private final AddressMapper addressMapper;
-    private final DeliveryMapper deliveryMapper;
     private final AddressRepository addressRepository;
     private final DeliveryRepository deliveryRepository;
+
+    private final OrderClient orderClient;
+    private final WarehouseClient warehouseClient;
+
+    private final AddressMapper addressMapper;
+    private final DeliveryMapper deliveryMapper;
+
     private final DeliveryCostCalculator deliveryCostCalculator;
 
     @Override
@@ -56,6 +63,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         assertDeliveryState(delivery, DeliveryState.IN_PROGRESS);
 
+        orderClient.deliverySuccessful(delivery.getOrderId());
+
         delivery.setDeliveryState(DeliveryState.DELIVERED);
 
         return deliveryMapper.toDeliveryDto(delivery);
@@ -67,6 +76,8 @@ public class DeliveryServiceImpl implements DeliveryService {
         Delivery delivery = getDeliveryOrThrowException(deliveryId);
 
         assertDeliveryState(delivery, DeliveryState.CREATED);
+
+        warehouseClient.shippedToDelivery(deliveryMapper.toShippedToDeliveryRequest(delivery));
 
         delivery.setDeliveryState(DeliveryState.IN_PROGRESS);
 
@@ -81,6 +92,8 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (delivery.getDeliveryState() != DeliveryState.FAILED) {
             delivery.setDeliveryState(DeliveryState.FAILED);
         }
+
+        orderClient.deliveryOrderFailed(delivery.getOrderId());
 
         return deliveryMapper.toDeliveryDto(delivery);
     }

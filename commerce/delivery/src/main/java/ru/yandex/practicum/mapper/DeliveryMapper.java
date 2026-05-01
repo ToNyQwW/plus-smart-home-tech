@@ -6,6 +6,7 @@ import ru.yandex.practicum.dal.entity.Address;
 import ru.yandex.practicum.dal.entity.Delivery;
 import ru.yandex.practicum.dto.commerce.delivery.CreateNewDeliveryRequest;
 import ru.yandex.practicum.dto.commerce.delivery.DeliveryDto;
+import ru.yandex.practicum.dto.commerce.warehouse.ShippedToDeliveryRequest;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
@@ -17,4 +18,6 @@ public interface DeliveryMapper {
     Delivery toDelivery(CreateNewDeliveryRequest request, Address fromAddress, Address toAddress);
 
     DeliveryDto toDeliveryDto(Delivery delivery);
+
+    ShippedToDeliveryRequest toShippedToDeliveryRequest(Delivery delivery);
 }

@@ -30,6 +30,22 @@ public class OrderFallbackFactory implements FallbackFactory<OrderClient> {
                 throw defaultFallback(cause);
             }
 
+            @Override
+            public OrderDto deliverySuccessful(UUID orderId) {
+                if (cause instanceof OrderNotFoundException) {
+                    throw (OrderNotFoundException) cause;
+                }
+                throw defaultFallback(cause);
+            }
+
+            @Override
+            public OrderDto deliveryOrderFailed(UUID orderId) {
+                if (cause instanceof OrderNotFoundException) {
+                    throw (OrderNotFoundException) cause;
+                }
+                throw defaultFallback(cause);
+            }
+
             private OrderServiceUnavailableException defaultFallback(Throwable cause) {
                 return new OrderServiceUnavailableException("Order недоступен: " + cause.getMessage());
             }
