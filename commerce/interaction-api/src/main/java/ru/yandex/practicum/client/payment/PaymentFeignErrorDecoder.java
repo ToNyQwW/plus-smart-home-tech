@@ -8,13 +8,13 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.exception.ErrorResponse;
 import ru.yandex.practicum.exception.ProductNotFoundException;
+import ru.yandex.practicum.exception.payment.PaymentAlreadyExistsException;
 import ru.yandex.practicum.exception.payment.PaymentServiceUnavailableException;
 import ru.yandex.practicum.exception.store.ShoppingStoreServiceUnavailableException;
 
 import java.io.InputStream;
 
-import static ru.yandex.practicum.util.ErrorMessagesConstants.PRODUCT_NOT_FOUND;
-import static ru.yandex.practicum.util.ErrorMessagesConstants.SHOPPING_STORE_SERVICE_UNAVAILABLE;
+import static ru.yandex.practicum.util.ErrorMessagesConstants.*;
 
 @Component
 @RequiredArgsConstructor
@@ -31,7 +31,7 @@ public class PaymentFeignErrorDecoder implements ErrorDecoder {
             ErrorResponse error = objectMapper.readValue(inputStream, ErrorResponse.class);
 
             return switch (response.status()) {
-                case 404, 503 -> mapPaymentException(error);
+                case 400 ,404, 503 -> mapPaymentException(error);
                 default -> new PaymentServiceUnavailableException(error.getUserMessage());
             };
         }
@@ -40,6 +40,7 @@ public class PaymentFeignErrorDecoder implements ErrorDecoder {
     private RuntimeException mapPaymentException(ErrorResponse error) {
         return switch (error.getMessage()) {
             case PRODUCT_NOT_FOUND -> new ProductNotFoundException(error.getUserMessage());
+            case PAYMENT_ALREADY_EXISTS -> new PaymentAlreadyExistsException(error.getUserMessage());
             case SHOPPING_STORE_SERVICE_UNAVAILABLE ->
                     new ShoppingStoreServiceUnavailableException(error.getUserMessage());
             default -> new RuntimeException(error.getUserMessage());

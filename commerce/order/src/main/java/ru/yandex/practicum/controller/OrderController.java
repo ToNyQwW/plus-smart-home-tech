@@ -38,6 +38,11 @@ public class OrderController implements OrderClient {
         return orderService.calculateTotalPrice(orderId);
     }
 
+    @PostMapping("/payment/execute")
+    public OrderDto executePayment(@RequestBody UUID orderId) {
+        return orderService.executePayment(orderId);
+    }
+
     @PostMapping("/payment")
     public OrderDto paymentSuccess(@RequestBody UUID orderId) {
         return orderService.paymentSuccess(orderId);

@@ -8,6 +8,7 @@ import ru.yandex.practicum.exception.delivery.DeliveryAlreadyExistsException;
 import ru.yandex.practicum.exception.delivery.DeliveryNotFoundException;
 import ru.yandex.practicum.exception.delivery.DeliveryServiceUnavailableException;
 import ru.yandex.practicum.exception.order.InvalidOrderStateException;
+import ru.yandex.practicum.exception.payment.PaymentAlreadyExistsException;
 import ru.yandex.practicum.exception.payment.PaymentServiceUnavailableException;
 import ru.yandex.practicum.exception.store.ShoppingStoreServiceUnavailableException;
 import ru.yandex.practicum.exception.warehouse.LowQuantityException;
@@ -47,6 +48,22 @@ public class ErrorHandler {
                 .httpStatus(NOT_FOUND)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.DELIVERY_NOT_FOUND)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(PaymentAlreadyExistsException.class)
+    public ErrorResponse handlePaymentAlreadyExistsException(PaymentAlreadyExistsException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception PaymentAlreadyExistsException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(BAD_REQUEST)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.PAYMENT_ALREADY_EXISTS)
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();

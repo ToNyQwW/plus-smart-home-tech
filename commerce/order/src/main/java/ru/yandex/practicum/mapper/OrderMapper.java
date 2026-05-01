@@ -7,6 +7,7 @@ import ru.yandex.practicum.dto.commerce.delivery.CalculateDeliveryCostRequest;
 import ru.yandex.practicum.dto.commerce.order.OrderDto;
 import ru.yandex.practicum.dto.commerce.payment.CalculateProductCostRequest;
 import ru.yandex.practicum.dto.commerce.payment.CalculateTotalCostRequest;
+import ru.yandex.practicum.dto.commerce.payment.CreatePaymentRequest;
 import ru.yandex.practicum.dto.commerce.warehouse.AssemblyProductsForOrderRequest;
 import ru.yandex.practicum.model.OrderCreationContext;
 
@@ -23,6 +24,8 @@ public interface OrderMapper {
     @Mapping(target = "deliveryVolume", source = "warehouseInfo.deliveryVolume")
     @Mapping(target = "deliveryWeight", source = "warehouseInfo.deliveryWeight")
     Order toOrder(OrderCreationContext context);
+
+    CreatePaymentRequest toCreatePaymentRequest(Order order);
 
     CalculateTotalCostRequest toCalculateTotalCostRequest(Order order);
 

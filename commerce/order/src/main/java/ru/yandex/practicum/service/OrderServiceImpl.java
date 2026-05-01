@@ -15,6 +15,7 @@ import ru.yandex.practicum.dto.commerce.delivery.DeliveryDto;
 import ru.yandex.practicum.dto.commerce.order.CreateNewOrderRequest;
 import ru.yandex.practicum.dto.commerce.order.OrderDto;
 import ru.yandex.practicum.dto.commerce.order.ProductReturnRequest;
+import ru.yandex.practicum.dto.commerce.payment.PaymentDto;
 import ru.yandex.practicum.dto.commerce.warehouse.BookedProductsDto;
 import ru.yandex.practicum.exception.OrderNotFoundException;
 import ru.yandex.practicum.exception.order.InvalidOrderStateException;
@@ -98,6 +99,20 @@ public class OrderServiceImpl implements OrderService {
 
         BigDecimal totalPrice = paymentClient.totalCost(orderMapper.toCalculateTotalCostRequest(order));
         order.setTotalPrice(totalPrice);
+
+        return orderMapper.toOrderDto(order);
+    }
+
+    @Override
+    @Loggable
+    @Transactional(readOnly = true)
+    public OrderDto executePayment(UUID orderId) {
+        Order order = getOrderOrElseThrow(orderId);
+
+        PaymentDto paymentDto = paymentClient.createPayment(orderMapper.toCreatePaymentRequest(order));
+
+        order.setState(OrderState.ON_PAYMENT);
+        order.setPaymentId(paymentDto.getPaymentId());
 
         return orderMapper.toOrderDto(order);
     }

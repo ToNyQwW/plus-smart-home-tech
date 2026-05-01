@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.client.payment.PaymentClient;
 import ru.yandex.practicum.dto.commerce.payment.CalculateProductCostRequest;
 import ru.yandex.practicum.dto.commerce.payment.CalculateTotalCostRequest;
 import ru.yandex.practicum.dto.commerce.payment.CreatePaymentRequest;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/payment")
-public class PaymentController {
+public class PaymentController implements PaymentClient {
 
     private final PaymentService paymentService;
 

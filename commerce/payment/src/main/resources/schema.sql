@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS payment
 (
-    payment_id     UUID PRIMARY KEY,
+    payment_id     UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     order_id       UUID           NOT NULL UNIQUE,
     payment_state  VARCHAR(10)    NOT NULL CHECK ( payment_state IN ('PENDING', 'SUCCESS', 'FAILED')),
     total_payment  NUMERIC(12, 2) NOT NULL CHECK (total_payment > 0),

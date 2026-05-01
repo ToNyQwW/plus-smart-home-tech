@@ -18,6 +18,7 @@ import java.util.UUID;
 public class Payment {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "payment_id")
     private UUID paymentId;
 
