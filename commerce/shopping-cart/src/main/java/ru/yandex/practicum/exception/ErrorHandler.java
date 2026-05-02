@@ -24,7 +24,6 @@ public class ErrorHandler {
         log.warn("Exception NotAuthorizedUserException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(UNAUTHORIZED)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.UNAUTHORIZED)
@@ -40,7 +39,6 @@ public class ErrorHandler {
         log.warn("Exception ShoppingCartNotFoundException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(NOT_FOUND)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.SHOPPING_CART_NOT_FOUND)
@@ -56,10 +54,24 @@ public class ErrorHandler {
         log.warn("Exception NoProductsInShoppingCartException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.NO_PRODUCTS_IN_SHOPPING_CART)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ErrorResponse handleProductNotFoundException(ProductNotFoundException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception ProductNotFoundException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(NOT_FOUND)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.PRODUCT_NOT_FOUND)
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();
@@ -72,7 +84,6 @@ public class ErrorHandler {
         log.warn("Exception LowQuantityException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.LOW_QUANTITY_IN_WAREHOUSE)
@@ -88,7 +99,6 @@ public class ErrorHandler {
         log.warn("Exception WarehouseServiceUnavailableException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(SERVICE_UNAVAILABLE)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.WAREHOUSE_SERVICE_UNAVAILABLE)

@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS shopping_store_products
     quantity_state   VARCHAR(50)    NOT NULL CHECK (quantity_state IN ('ENDED', 'FEW', 'ENOUGH', 'MANY')),
     product_state    VARCHAR(50)    NOT NULL CHECK (product_state IN ('ACTIVE', 'DEACTIVATE')),
     product_category VARCHAR(50)    NOT NULL CHECK (product_category IN ('LIGHTING', 'CONTROL', 'SENSORS')),
-    price            DECIMAL(10, 2) NOT NULL CHECK ( price > 0)
+    price            NUMERIC(12, 2) NOT NULL CHECK (price > 0)
 );

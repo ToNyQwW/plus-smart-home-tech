@@ -6,19 +6,24 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.aop.Loggable;
 import ru.yandex.practicum.dal.entity.Product;
 import ru.yandex.practicum.dal.repository.ProductRepository;
-import ru.yandex.practicum.dto.store.CreateProductDto;
-import ru.yandex.practicum.dto.store.ProductDto;
-import ru.yandex.practicum.dto.store.SetProductQuantityStateRequest;
-import ru.yandex.practicum.dto.store.UpdateProductDto;
+import ru.yandex.practicum.dto.commerce.store.CreateProductDto;
+import ru.yandex.practicum.dto.commerce.store.ProductDto;
+import ru.yandex.practicum.dto.commerce.store.SetProductQuantityStateRequest;
+import ru.yandex.practicum.dto.commerce.store.UpdateProductDto;
 import ru.yandex.practicum.exception.ProductNotFoundException;
 import ru.yandex.practicum.mapper.ProductMapper;
 import ru.yandex.practicum.model.ProductCategory;
 import ru.yandex.practicum.model.ProductState;
 import ru.yandex.practicum.model.QuantityState;
 
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.util.*;
+
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @Service
@@ -60,6 +65,18 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
         log.info("Количество найденных записей: {}", products.getContent().size());
 
         return products.map(productMapper::toProductDto);
+    }
+
+    @Override
+    @Loggable
+    @Transactional(readOnly = true)
+    public Map<UUID, BigDecimal> getProductsPrice(Set<UUID> productIds) {
+
+        List<Product> products = getProductsOrElseThrow(productIds);
+        log.info("Найденные товары: {}", products);
+
+        return products.stream()
+                .collect(toMap(Product::getProductId, Product::getPrice));
     }
 
     @Override
@@ -114,5 +131,22 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
                             return new ProductNotFoundException("Товар с Id: " + productId + " не найден");
                         }
                 );
+    }
+
+    private List<Product> getProductsOrElseThrow(Set<UUID> productIds) {
+        List<Product> products = productRepository.findByProductIdIn(productIds);
+
+        if (products.size() != productIds.size()) {
+            Set<UUID> foundIds = products.stream()
+                    .map(Product::getProductId)
+                    .collect(toSet());
+
+            Set<UUID> missingIds = new HashSet<>(productIds);
+            missingIds.removeAll(foundIds);
+
+            throw new ProductNotFoundException("Не найдены товары с id: " + missingIds);
+        }
+
+        return products;
     }
 }

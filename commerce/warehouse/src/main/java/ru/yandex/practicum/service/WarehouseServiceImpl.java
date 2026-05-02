@@ -5,17 +5,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.aop.Loggable;
+import ru.yandex.practicum.dal.entity.Order;
 import ru.yandex.practicum.dal.entity.Product;
+import ru.yandex.practicum.dal.repository.OrderRepository;
 import ru.yandex.practicum.dal.repository.ProductRepository;
-import ru.yandex.practicum.dto.cart.ShoppingCartDto;
-import ru.yandex.practicum.dto.warehouse.AddProductToWarehouseRequest;
-import ru.yandex.practicum.dto.warehouse.AddressDto;
-import ru.yandex.practicum.dto.warehouse.BookedProductsDto;
-import ru.yandex.practicum.dto.warehouse.NewProductInWarehouseRequest;
+import ru.yandex.practicum.dto.commerce.AddressDto;
+import ru.yandex.practicum.dto.commerce.ShoppingCartRequest;
+import ru.yandex.practicum.dto.commerce.warehouse.*;
+import ru.yandex.practicum.exception.OrderNotFoundException;
 import ru.yandex.practicum.exception.ProductNotFoundException;
 import ru.yandex.practicum.exception.warehouse.LowQuantityException;
 import ru.yandex.practicum.exception.warehouse.ProductAlreadyExistsException;
+import ru.yandex.practicum.mapper.OrderMapper;
 import ru.yandex.practicum.mapper.ProductMapper;
+import ru.yandex.practicum.model.WarehouseAddress;
 
 import java.security.SecureRandom;
 import java.util.*;
@@ -30,12 +34,18 @@ import static java.util.stream.Collectors.toSet;
 @RequiredArgsConstructor
 public class WarehouseServiceImpl implements WarehouseService {
 
-    private static final String[] ADDRESSES = new String[]{"ADDRESS_1", "ADDRESS_2"};
+    private static final String[] ADDRESSES = new String[]{
+            WarehouseAddress.ADDRESS_1.toString(),
+            WarehouseAddress.ADDRESS_2.toString()
+    };
 
     private static final String CURRENT_ADDRESS =
             ADDRESSES[Random.from(new SecureRandom()).nextInt(0, ADDRESSES.length)];
 
+    private final OrderMapper orderMapper;
     private final ProductMapper productMapper;
+
+    private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
     @Override
@@ -60,54 +70,46 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
+    @Loggable
     @Transactional(readOnly = true)
-    public BookedProductsDto checkProductsForShoppingCart(ShoppingCartDto request) {
-        log.info("Метод checkProductsForShoppingCart. request: {}", request);
-        boolean fragile = false;
-        double deliveryVolume = 0;
-        double deliveryWeight = 0;
-        List<UUID> missingProducts = new ArrayList<>();
+    public BookedProductsDto checkProductsForShoppingCart(ShoppingCartRequest request) {
+        return processProducts(request.getProducts(), false);
+    }
 
-        Map<UUID, Long> requestProducts = request.getProducts();
-        Map<UUID, Product> productMap = getProductsOrElseThrow(requestProducts.keySet())
-                .stream()
-                .collect(toMap(Product::getProductId, Function.identity()));
+    @Override
+    @Loggable
+    @Transactional
+    public BookedProductsDto assembleProductsForOrder(AssemblyProductsForOrderRequest request) {
+        BookedProductsDto assembledProducts = processProducts(request.getProducts(), true);
 
-        for (var productEntry : requestProducts.entrySet()) {
-            UUID productId = productEntry.getKey();
-            long requestedQuantity = productEntry.getValue();
+        Order order = orderMapper.toOrder(request);
+        orderRepository.save(order);
 
-            Product product = productMap.get(productId);
+        return assembledProducts;
+    }
 
-            long availableQuantity = product.getQuantity();
-            if (availableQuantity < requestedQuantity) {
-                log.info("Недостаточное количество на складе для товара с id: {}. Нужно {}, есть {}",
-                        productId, requestedQuantity, availableQuantity);
-                missingProducts.add(productId);
-                continue;
-            }
+    @Override
+    @Loggable
+    @Transactional
+    public void shippedToDelivery(ShippedToDeliveryRequest request) {
+        Order order = getOrderOrElseThrow(request.getOrderId());
 
-            deliveryVolume += product.getVolume() * requestedQuantity;
-            deliveryWeight += product.getWeight() * requestedQuantity;
+        UUID deliveryId = request.getDeliveryId();
+        order.setDeliveryId(deliveryId);
 
-            if (product.isFragile()) {
-                fragile = true;
-            }
+        log.info("Товары переданы в доставку с id: {}", deliveryId);
+    }
+
+    @Override
+    @Loggable
+    @Transactional
+    public void returnProducts(Map<UUID, Long> requestProducts) {
+        List<Product> products = getProductsOrElseThrow(requestProducts.keySet());
+
+        for (Product product : products) {
+            product.setQuantity(product.getQuantity() + requestProducts.get(product.getProductId()));
         }
-
-        if (!missingProducts.isEmpty()) {
-            log.info("Недостаток товаров на складе для корзины c ID {}:  список товаров : {}",
-                    request.getShoppingCartId(), missingProducts);
-            throw new LowQuantityException("Недостаточно товаров на складе для товаров с Id: " + missingProducts);
-        }
-
-        log.info("Количество товара на складе достаточно. Общий вес: {}, объем {}, хрупкий товар: {}",
-                deliveryWeight, deliveryVolume, fragile);
-        return BookedProductsDto.builder()
-                .deliveryWeight(deliveryWeight)
-                .deliveryVolume(deliveryVolume)
-                .fragile(fragile)
-                .build();
+        log.info("Товары успешно возвращены на склад");
     }
 
     @Override
@@ -121,6 +123,61 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .house(CURRENT_ADDRESS)
                 .flat(CURRENT_ADDRESS)
                 .build();
+    }
+
+    private BookedProductsDto processProducts(Map<UUID, Long> products, boolean shouldDecrease) {
+        boolean fragile = false;
+        double deliveryVolume = 0;
+        double deliveryWeight = 0;
+        List<UUID> missingProducts = new ArrayList<>();
+
+        Map<UUID, Product> productMap = getProductsOrElseThrow(products.keySet())
+                .stream()
+                .collect(toMap(Product::getProductId, Function.identity()));
+
+        for (var entry : products.entrySet()) {
+            UUID productId = entry.getKey();
+            long requestedQuantity = entry.getValue();
+
+            Product product = productMap.get(productId);
+
+            if (product.getQuantity() < requestedQuantity) {
+                missingProducts.add(productId);
+            }
+        }
+
+        if (!missingProducts.isEmpty()) {
+            throw new LowQuantityException("Недостаточно товаров на складе с Id: " + missingProducts);
+        }
+
+        for (var entry : products.entrySet()) {
+            UUID productId = entry.getKey();
+            long requestedQuantity = entry.getValue();
+
+            Product product = productMap.get(productId);
+
+            if (shouldDecrease) {
+                product.setQuantity(product.getQuantity() - requestedQuantity);
+            }
+
+            deliveryVolume += product.getVolume() * requestedQuantity;
+            deliveryWeight += product.getWeight() * requestedQuantity;
+
+            if (product.isFragile()) {
+                fragile = true;
+            }
+        }
+
+        return BookedProductsDto.builder()
+                .deliveryWeight(deliveryWeight)
+                .deliveryVolume(deliveryVolume)
+                .fragile(fragile)
+                .build();
+    }
+
+    private Order getOrderOrElseThrow(UUID orderId) {
+        return orderRepository.findByOrderId(orderId).orElseThrow(() ->
+                new OrderNotFoundException("Заказ с id: " + orderId + " не найден"));
     }
 
     private void throwIfProductAlreadyExists(UUID productId) {

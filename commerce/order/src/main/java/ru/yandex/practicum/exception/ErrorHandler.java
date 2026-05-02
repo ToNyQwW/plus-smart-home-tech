@@ -1,0 +1,188 @@
+package ru.yandex.practicum.exception;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.yandex.practicum.exception.delivery.DeliveryAlreadyExistsException;
+import ru.yandex.practicum.exception.delivery.DeliveryNotFoundException;
+import ru.yandex.practicum.exception.delivery.DeliveryServiceUnavailableException;
+import ru.yandex.practicum.exception.order.InvalidOrderStateException;
+import ru.yandex.practicum.exception.payment.PaymentAlreadyExistsException;
+import ru.yandex.practicum.exception.payment.PaymentServiceUnavailableException;
+import ru.yandex.practicum.exception.store.ShoppingStoreServiceUnavailableException;
+import ru.yandex.practicum.exception.warehouse.LowQuantityException;
+import ru.yandex.practicum.exception.warehouse.WarehouseServiceUnavailableException;
+import ru.yandex.practicum.util.ErrorMessagesConstants;
+
+import static org.springframework.http.HttpStatus.*;
+
+@Slf4j
+@RestControllerAdvice
+public class ErrorHandler {
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(LowQuantityException.class)
+    public ErrorResponse handleLowQuantityException(LowQuantityException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception LowQuantityException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(BAD_REQUEST)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.LOW_QUANTITY_IN_WAREHOUSE)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(DeliveryNotFoundException.class)
+    public ErrorResponse handleDeliveryNotFoundException(DeliveryNotFoundException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception DeliveryNotFoundException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(NOT_FOUND)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.DELIVERY_NOT_FOUND)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(PaymentAlreadyExistsException.class)
+    public ErrorResponse handlePaymentAlreadyExistsException(PaymentAlreadyExistsException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception PaymentAlreadyExistsException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(BAD_REQUEST)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.PAYMENT_ALREADY_EXISTS)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ErrorResponse handleProductNotFoundException(ProductNotFoundException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception ProductNotFoundException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(NOT_FOUND)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.PRODUCT_NOT_FOUND)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ErrorResponse handleOrderNotFoundException(OrderNotFoundException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception OrderNotFoundException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(NOT_FOUND)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.ORDER_NOT_FOUND)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    @ExceptionHandler(WarehouseServiceUnavailableException.class)
+    public ErrorResponse handleWarehouseServiceUnavailableException(WarehouseServiceUnavailableException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception WarehouseServiceUnavailableException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(SERVICE_UNAVAILABLE)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.WAREHOUSE_SERVICE_UNAVAILABLE)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(DeliveryAlreadyExistsException.class)
+    public ErrorResponse handleDeliveryAlreadyExistsException(DeliveryAlreadyExistsException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception DeliveryAlreadyExistsException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(BAD_REQUEST)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.DELIVERY_ALREADY_EXISTS)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    @ExceptionHandler(DeliveryServiceUnavailableException.class)
+    public ErrorResponse handleDeliveryServiceUnavailableException(DeliveryServiceUnavailableException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception DeliveryServiceUnavailableException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(SERVICE_UNAVAILABLE)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.DELIVERY_SERVICE_UNAVAILABLE)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(InvalidOrderStateException.class)
+    public ErrorResponse handleInvalidOrderStateException(InvalidOrderStateException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception InvalidOrderStateException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(BAD_REQUEST)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.INVALID_ORDER_STATE)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    @ExceptionHandler(ShoppingStoreServiceUnavailableException.class)
+    public ErrorResponse handleShoppingStoreServiceUnavailableException(ShoppingStoreServiceUnavailableException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception ShoppingStoreServiceUnavailableException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(SERVICE_UNAVAILABLE)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.SHOPPING_STORE_SERVICE_UNAVAILABLE)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    @ExceptionHandler(PaymentServiceUnavailableException.class)
+    public ErrorResponse handlePaymentServiceUnavailableException(PaymentServiceUnavailableException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception PaymentServiceUnavailableException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(SERVICE_UNAVAILABLE)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.PAYMENT_SERVICE_UNAVAILABLE)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+}

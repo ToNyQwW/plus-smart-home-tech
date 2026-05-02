@@ -9,6 +9,7 @@ import ru.yandex.practicum.exception.warehouse.ProductAlreadyExistsException;
 import ru.yandex.practicum.util.ErrorMessagesConstants;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Slf4j
 @RestControllerAdvice
@@ -21,7 +22,6 @@ public class ErrorHandler {
         log.warn("Exception ProductAlreadyExistsException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.PRODUCT_ALREADY_EXISTS)
@@ -37,7 +37,6 @@ public class ErrorHandler {
         log.warn("Exception ProductNotFoundException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.PRODUCT_NOT_FOUND)
@@ -53,10 +52,24 @@ public class ErrorHandler {
         log.warn("Exception LowQuantityException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.LOW_QUANTITY_IN_WAREHOUSE)
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ErrorResponse handleOrderNotFoundException(OrderNotFoundException e) {
+        String exceptionMessage = e.getMessage();
+        log.warn("Exception OrderNotFoundException, причина : {}", exceptionMessage);
+        return ErrorResponse.builder()
+                .cause(e.getCause())
+                .httpStatus(NOT_FOUND)
+                .userMessage(exceptionMessage)
+                .message(ErrorMessagesConstants.ORDER_NOT_FOUND)
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();

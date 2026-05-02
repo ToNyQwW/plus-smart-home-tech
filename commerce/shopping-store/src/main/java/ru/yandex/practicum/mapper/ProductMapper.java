@@ -4,9 +4,9 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import ru.yandex.practicum.dal.entity.Product;
-import ru.yandex.practicum.dto.store.CreateProductDto;
-import ru.yandex.practicum.dto.store.ProductDto;
-import ru.yandex.practicum.dto.store.UpdateProductDto;
+import ru.yandex.practicum.dto.commerce.store.CreateProductDto;
+import ru.yandex.practicum.dto.commerce.store.ProductDto;
+import ru.yandex.practicum.dto.commerce.store.UpdateProductDto;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
