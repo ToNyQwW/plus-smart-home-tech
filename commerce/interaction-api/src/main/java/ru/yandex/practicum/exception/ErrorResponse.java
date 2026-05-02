@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 public class ErrorResponse {
 
     private Throwable cause;
-    private StackTraceElement[] stackTrace;
     private HttpStatus httpStatus;
     private String userMessage;
     private String message;

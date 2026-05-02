@@ -25,13 +25,15 @@ public class PaymentFeignErrorDecoder implements ErrorDecoder {
     @Override
     @SneakyThrows
     public Exception decode(String methodKey, Response response) {
+        Response.Body body = response.body();
+        throwIfEmptyBodyResponse(body);
 
-        try (InputStream inputStream = response.body().asInputStream()) {
+        try (InputStream inputStream = body.asInputStream()) {
 
             ErrorResponse error = objectMapper.readValue(inputStream, ErrorResponse.class);
 
             return switch (response.status()) {
-                case 400 ,404, 503 -> mapPaymentException(error);
+                case 400, 404, 503 -> mapPaymentException(error);
                 default -> new PaymentServiceUnavailableException(error.getUserMessage());
             };
         }
@@ -45,5 +47,11 @@ public class PaymentFeignErrorDecoder implements ErrorDecoder {
                     new ShoppingStoreServiceUnavailableException(error.getUserMessage());
             default -> new RuntimeException(error.getUserMessage());
         };
+    }
+
+    private void throwIfEmptyBodyResponse(Response.Body body) {
+        if (body == null) {
+            throw new PaymentServiceUnavailableException("Payment недоступен");
+        }
     }
 }

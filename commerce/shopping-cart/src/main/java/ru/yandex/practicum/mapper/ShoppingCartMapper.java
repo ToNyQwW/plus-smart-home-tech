@@ -17,5 +17,5 @@ public interface ShoppingCartMapper {
     @Mapping(source = "cartId", target = "shoppingCartId")
     ShoppingCartRequest toShoppingCartRequest(ShoppingCart shoppingCart);
 
-    ShoppingCartDto toshoppingCartDto(ShoppingCartRequest request);
+    ShoppingCartDto toShoppingCartDto(ShoppingCartRequest request);
 }

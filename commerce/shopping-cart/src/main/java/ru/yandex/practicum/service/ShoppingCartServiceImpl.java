@@ -27,8 +27,8 @@ import static ru.yandex.practicum.model.ShoppingCartState.OPENED;
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 
-    private final ShoppingCartMapper shoppingCartMapper;
     private final WarehouseClient warehouseClient;
+    private final ShoppingCartMapper shoppingCartMapper;
     private final ShoppingCartRepository shoppingCartRepository;
 
     @Override
@@ -55,7 +55,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         shoppingCart.addProducts(products);
         log.info("товары успешно добавлены в корзину. shoppingCart: {}", shoppingCart);
 
-        return shoppingCartMapper.toshoppingCartDto(shoppingCartRequest);
+        return shoppingCartMapper.toShoppingCartDto(shoppingCartRequest);
     }
 
     @Override

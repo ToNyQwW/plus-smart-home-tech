@@ -24,7 +24,6 @@ public class ErrorHandler {
         log.warn("Exception DeliveryAlreadyExistsException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.DELIVERY_ALREADY_EXISTS)
@@ -40,7 +39,6 @@ public class ErrorHandler {
         log.warn("Exception DeliveryNotFoundException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(NOT_FOUND)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.DELIVERY_NOT_FOUND)
@@ -56,7 +54,6 @@ public class ErrorHandler {
         log.warn("Exception InvalidDeliveryStateException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.INVALID_DELIVERY_STATE)
@@ -72,7 +69,6 @@ public class ErrorHandler {
         log.warn("Exception OrderNotFoundException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(NOT_FOUND)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.ORDER_NOT_FOUND)
@@ -90,7 +86,6 @@ public class ErrorHandler {
         log.warn("Exception WarehouseServiceUnavailableException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(SERVICE_UNAVAILABLE)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.WAREHOUSE_SERVICE_UNAVAILABLE)
@@ -106,7 +101,6 @@ public class ErrorHandler {
         log.warn("Exception OrderServiceUnavailableException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(SERVICE_UNAVAILABLE)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.ORDER_SERVICE_UNAVAILABLE)

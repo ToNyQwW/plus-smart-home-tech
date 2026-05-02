@@ -22,7 +22,6 @@ public class ErrorHandler {
         log.warn("Exception ProductAlreadyExistsException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.PRODUCT_ALREADY_EXISTS)
@@ -38,7 +37,6 @@ public class ErrorHandler {
         log.warn("Exception ProductNotFoundException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.PRODUCT_NOT_FOUND)
@@ -54,7 +52,6 @@ public class ErrorHandler {
         log.warn("Exception LowQuantityException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(BAD_REQUEST)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.LOW_QUANTITY_IN_WAREHOUSE)
@@ -70,7 +67,6 @@ public class ErrorHandler {
         log.warn("Exception OrderNotFoundException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(NOT_FOUND)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.ORDER_NOT_FOUND)

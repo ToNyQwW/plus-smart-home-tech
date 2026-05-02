@@ -1,19 +1,17 @@
 package ru.yandex.practicum.pricing;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.model.WarehouseAddress;
+import ru.yandex.practicum.pricing.configuration.DeliveryCostProperties;
 
 import java.math.BigDecimal;
 
 @Component
+@RequiredArgsConstructor
 public class DeliveryCostCalculator {
 
-    private static final BigDecimal BASE_COST = BigDecimal.valueOf(5);
-    private static final BigDecimal FRAGILE_MULTIPLIER = BigDecimal.valueOf(1.2);
-    private static final BigDecimal DISTANCE_MULTIPLIER = BigDecimal.valueOf(1.2);
-
-    private static final BigDecimal WEIGHT_RATE = BigDecimal.valueOf(0.3);
-    private static final BigDecimal VOLUME_RATE = BigDecimal.valueOf(0.2);
+    private final DeliveryCostProperties properties;
 
     public BigDecimal calculateDeliveryCost(String fromStreet,
                                             String toStreet,
@@ -21,23 +19,23 @@ public class DeliveryCostCalculator {
                                             double deliveryVolume,
                                             boolean isFragile) {
 
-        BigDecimal cost = BASE_COST;
+        BigDecimal cost = properties.getBaseCost();
 
         if (fromStreet.equals(WarehouseAddress.ADDRESS_1.toString())) {
-            cost = cost.add(BASE_COST);
+            cost = cost.add(properties.getBaseCost());
         } else if (fromStreet.equals(WarehouseAddress.ADDRESS_2.toString())) {
-            cost = cost.add(BASE_COST.multiply(BigDecimal.valueOf(2)));
+            cost = cost.add(properties.getBaseCost().multiply(BigDecimal.valueOf(2)));
         }
 
         if (isFragile) {
-            cost = cost.multiply(FRAGILE_MULTIPLIER);
+            cost = cost.multiply(properties.getFragileMultiplier());
         }
 
-        cost = cost.add(BigDecimal.valueOf(deliveryWeight).multiply(WEIGHT_RATE));
-        cost = cost.add(BigDecimal.valueOf(deliveryVolume).multiply(VOLUME_RATE));
+        cost = cost.add(BigDecimal.valueOf(deliveryWeight).multiply(properties.getWeightRate()));
+        cost = cost.add(BigDecimal.valueOf(deliveryVolume).multiply(properties.getVolumeRate()));
 
         if (!toStreet.equals(fromStreet)) {
-            cost = cost.multiply(DISTANCE_MULTIPLIER);
+            cost = cost.multiply(properties.getDistanceMultiplier());
         }
 
         return cost;

@@ -1,3 +1,6 @@
+payment-vat-properties:
+  vat-rate: 0.1
+
 server:
   port: 0
 

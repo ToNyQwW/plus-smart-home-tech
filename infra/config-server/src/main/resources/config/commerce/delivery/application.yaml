@@ -1,3 +1,10 @@
+delivery-cost-properties:
+  base-cost: 5
+  fragile-multiplier: 1.2
+  distance-multiplier: 1.2
+  weight-rate: 0.3
+  volume-rate: 0.2
+
 server:
   port: 0
 

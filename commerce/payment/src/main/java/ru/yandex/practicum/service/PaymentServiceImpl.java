@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.aop.Loggable;
 import ru.yandex.practicum.client.order.OrderClient;
 import ru.yandex.practicum.client.store.ShoppingStoreClient;
+import ru.yandex.practicum.configuration.PaymentProperties;
 import ru.yandex.practicum.dal.entity.Payment;
 import ru.yandex.practicum.dal.repository.PaymentRepository;
 import ru.yandex.practicum.dto.commerce.payment.CalculateProductCostRequest;
@@ -34,7 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final OrderClient orderClient;
     private final ShoppingStoreClient shoppingStoreClient;
 
-    private static final BigDecimal VAT_RATE = BigDecimal.valueOf(0.1);
+    private final PaymentProperties properties;
 
     @Override
     @Loggable
@@ -44,7 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         Payment payment = paymentMapper.toPayment(request);
 
-        payment.setFeeTotal(payment.getProductTotal().multiply(VAT_RATE));
+        payment.setFeeTotal(payment.getProductTotal().multiply(properties.getVatRate()));
 
         payment.setTotalPayment(
                 payment.getProductTotal()
@@ -92,7 +93,7 @@ public class PaymentServiceImpl implements PaymentService {
         BigDecimal productPrice = request.getProductPrice();
 
         return productPrice
-                .add(productPrice.multiply(VAT_RATE))
+                .add(productPrice.multiply(properties.getVatRate()))
                 .add(request.getDeliveryPrice());
     }
 

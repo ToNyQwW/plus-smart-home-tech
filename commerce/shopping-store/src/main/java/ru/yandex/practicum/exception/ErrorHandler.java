@@ -19,7 +19,6 @@ public class ErrorHandler {
         log.warn("Exception ProductNotFoundException, причина : {}", exceptionMessage);
         return ErrorResponse.builder()
                 .cause(e.getCause())
-                .stackTrace(e.getStackTrace())
                 .httpStatus(NOT_FOUND)
                 .userMessage(exceptionMessage)
                 .message(ErrorMessagesConstants.PRODUCT_NOT_FOUND)

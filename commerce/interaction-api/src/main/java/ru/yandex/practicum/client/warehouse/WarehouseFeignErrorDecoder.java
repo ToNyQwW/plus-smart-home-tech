@@ -25,8 +25,10 @@ public class WarehouseFeignErrorDecoder implements ErrorDecoder {
     @Override
     @SneakyThrows
     public Exception decode(String methodKey, Response response) {
+        Response.Body body = response.body();
+        throwIfEmptyBodyResponse(body);
 
-        try (InputStream inputStream = response.body().asInputStream()) {
+        try (InputStream inputStream = body.asInputStream()) {
 
             ErrorResponse error = objectMapper.readValue(inputStream, ErrorResponse.class);
 
@@ -39,10 +41,16 @@ public class WarehouseFeignErrorDecoder implements ErrorDecoder {
 
     private RuntimeException mapWarehouseException(ErrorResponse error) {
         return switch (error.getMessage()) {
-            case ORDER_NOT_FOUND ->  new OrderNotFoundException(error.getUserMessage());
+            case ORDER_NOT_FOUND -> new OrderNotFoundException(error.getUserMessage());
             case PRODUCT_NOT_FOUND -> new ProductNotFoundException(error.getUserMessage());
             case LOW_QUANTITY_IN_WAREHOUSE -> new LowQuantityException(error.getUserMessage());
             default -> new RuntimeException(error.getUserMessage());
         };
+    }
+
+    private void throwIfEmptyBodyResponse(Response.Body body) {
+        if (body == null) {
+            throw new WarehouseServiceUnavailableException("Warehouse недоступен");
+        }
     }
 }

@@ -8,7 +8,7 @@ import ru.yandex.practicum.dto.commerce.order.OrderDto;
 import java.util.UUID;
 
 @FeignClient(name = "order",
-        path = "/api/v1/oder",
+        path = "/api/v1/order",
         configuration = OrderFeignConfig.class,
         fallbackFactory = OrderFallbackFactory.class)
 public interface OrderClient {

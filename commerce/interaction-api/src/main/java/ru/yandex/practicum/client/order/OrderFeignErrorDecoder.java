@@ -23,8 +23,10 @@ public class OrderFeignErrorDecoder implements ErrorDecoder {
     @Override
     @SneakyThrows
     public Exception decode(String methodKey, Response response) {
+        Response.Body body = response.body();
+        throwIfEmptyBodyResponse(body);
 
-        try (InputStream inputStream = response.body().asInputStream()) {
+        try (InputStream inputStream = body.asInputStream()) {
 
             ErrorResponse error = objectMapper.readValue(inputStream, ErrorResponse.class);
 
@@ -40,5 +42,11 @@ public class OrderFeignErrorDecoder implements ErrorDecoder {
             case ORDER_NOT_FOUND -> new OrderNotFoundException(error.getUserMessage());
             default -> new RuntimeException(error.getUserMessage());
         };
+    }
+
+    private void throwIfEmptyBodyResponse(Response.Body body) {
+        if (body == null) {
+            throw new OrderServiceUnavailableException("Order недоступен");
+        }
     }
 }
